@@ -1,4 +1,4 @@
-import TextType from "../common/TextType/TextType";
+import TextType from "../../common/TextType/TextType";
 
 const Main = () => {
   return (
