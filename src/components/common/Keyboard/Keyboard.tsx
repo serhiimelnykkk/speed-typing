@@ -106,6 +106,7 @@ const keyboardRows: Required<KeyboardKey>[][] = [
     createKeyboardKey({ mainSymbol: ".", shiftSymbol: ">", isVisible: false }),
     createKeyboardKey({ mainSymbol: "/", shiftSymbol: "?", isVisible: false }),
   ],
+  [createKeyboardKey({ mainSymbol: " ", visualName: "Space" })],
 ];
 
 const Keyboard = () => {
