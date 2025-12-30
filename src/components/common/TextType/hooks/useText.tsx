@@ -8,16 +8,18 @@ const useText = (initialText: string) => {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === textLeft[0].toLowerCase()) {
-        setTypedText((prev) =>
-          prev.length < initialText.length
-            ? prev + initialText[prev.length]
-            : prev
-        );
-        setTextLeft((prev) => (prev.length > 0 ? prev.slice(1) : prev));
-        setCorrectButtonPressed(true);
-      } else {
-        setCorrectButtonPressed(false);
+      if (event.key.length === 1) {
+        if (event.key === textLeft[0].toLowerCase()) {
+          setTypedText((prev) =>
+            prev.length < initialText.length
+              ? prev + initialText[prev.length]
+              : prev
+          );
+          setTextLeft((prev) => (prev.length > 0 ? prev.slice(1) : prev));
+          setCorrectButtonPressed(true);
+        } else {
+          setCorrectButtonPressed(false);
+        }
       }
     };
 
