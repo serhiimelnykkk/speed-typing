@@ -3,7 +3,7 @@ import { memo } from "react";
 
 interface KeyProps {
   isPressed: boolean;
-  keyboardKey: KeyboardKey;
+  keyboardKey: Required<KeyboardKey>;
 }
 
 const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
@@ -15,7 +15,9 @@ const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
       style={{ width: `${3 * keyboardKey.widthMultiplier}rem` }}
       key={keyboardKey.mainSymbol}
     >
-      <div className="absolute top-1 left-1">{keyboardKey.mainSymbol}</div>
+      <div className="absolute top-1 left-1">
+        {keyboardKey.visualName || keyboardKey.mainSymbol}
+      </div>
       <div className="absolute bottom-1 right-1 text-sm">
         {keyboardKey.shiftSymbol}
       </div>

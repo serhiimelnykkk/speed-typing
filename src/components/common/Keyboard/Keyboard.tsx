@@ -3,23 +3,25 @@ import Key from "./Key/Key";
 
 export interface KeyboardKey {
   mainSymbol: string;
-  widthMultiplier: number;
-  shiftSymbol: string;
-  isVisible: boolean;
+  widthMultiplier?: number;
+  shiftSymbol?: string;
+  isVisible?: boolean;
+  visualName?: string;
 }
 
-const defaultKeyboardKey: KeyboardKey = {
+const defaultKeyboardKey: Required<KeyboardKey> = {
   mainSymbol: "",
   widthMultiplier: 1,
   shiftSymbol: "",
   isVisible: true,
+  visualName: "",
 };
 
-const createKeyboardKey = (options: Partial<KeyboardKey>) => {
+const createKeyboardKey = (options: KeyboardKey): Required<KeyboardKey> => {
   return { ...defaultKeyboardKey, ...options };
 };
 
-const keyboardRows: KeyboardKey[][] = [
+const keyboardRows: Required<KeyboardKey>[][] = [
   [
     createKeyboardKey({
       mainSymbol: "`",
