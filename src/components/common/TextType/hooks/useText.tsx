@@ -9,7 +9,7 @@ const useText = (initialText: string) => {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.length === 1) {
-        if (event.key === textLeft[0].toLowerCase()) {
+        if (event.key === textLeft[0]) {
           setTypedText((prev) =>
             prev.length < initialText.length
               ? prev + initialText[prev.length]
