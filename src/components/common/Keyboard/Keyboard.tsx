@@ -3,17 +3,13 @@ import Key from "./Key/Key";
 
 export interface KeyboardKey {
   mainSymbol: string;
-  widthMultiplier?: number;
   shiftSymbol?: string;
-  isVisible?: boolean;
   visualName?: string;
 }
 
 const defaultKeyboardKey: Required<KeyboardKey> = {
   mainSymbol: "",
-  widthMultiplier: 1,
   shiftSymbol: "",
-  isVisible: true,
   visualName: "",
 };
 
@@ -28,12 +24,8 @@ interface Row {
 
 const keyboardRows: Row[] = [
   {
+    styles: "ml-12",
     keyboardKeys: [
-      createKeyboardKey({
-        mainSymbol: "`",
-        shiftSymbol: "~",
-        isVisible: false,
-      }),
       createKeyboardKey({ mainSymbol: "1", shiftSymbol: "!" }),
       createKeyboardKey({ mainSymbol: "2", shiftSymbol: "@" }),
       createKeyboardKey({ mainSymbol: "3", shiftSymbol: "#" }),
@@ -44,30 +36,11 @@ const keyboardRows: Row[] = [
       createKeyboardKey({ mainSymbol: "8", shiftSymbol: "*" }),
       createKeyboardKey({ mainSymbol: "9", shiftSymbol: "(" }),
       createKeyboardKey({ mainSymbol: "0", shiftSymbol: ")" }),
-      createKeyboardKey({
-        mainSymbol: "-",
-        shiftSymbol: "_",
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: "=",
-        shiftSymbol: "+",
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: "Backspace",
-        widthMultiplier: 2,
-        isVisible: false,
-      }),
     ],
   },
   {
+    styles: "ml-18",
     keyboardKeys: [
-      createKeyboardKey({
-        mainSymbol: "Tab",
-        widthMultiplier: 1.6,
-        isVisible: false,
-      }),
       createKeyboardKey({ mainSymbol: "q", shiftSymbol: "Q" }),
       createKeyboardKey({ mainSymbol: "w", shiftSymbol: "W" }),
       createKeyboardKey({ mainSymbol: "e", shiftSymbol: "E" }),
@@ -78,18 +51,11 @@ const keyboardRows: Row[] = [
       createKeyboardKey({ mainSymbol: "i", shiftSymbol: "I" }),
       createKeyboardKey({ mainSymbol: "o", shiftSymbol: "O" }),
       createKeyboardKey({ mainSymbol: "p", shiftSymbol: "P" }),
-      createKeyboardKey({ mainSymbol: "[", isVisible: false }),
-      createKeyboardKey({ mainSymbol: "]", isVisible: false }),
-      createKeyboardKey({ mainSymbol: "\\", isVisible: false }),
     ],
   },
   {
+    styles: "ml-22",
     keyboardKeys: [
-      createKeyboardKey({
-        mainSymbol: "Capslock",
-        isVisible: false,
-        widthMultiplier: 1.9,
-      }),
       createKeyboardKey({ mainSymbol: "a", shiftSymbol: "A" }),
       createKeyboardKey({ mainSymbol: "s", shiftSymbol: "S" }),
       createKeyboardKey({ mainSymbol: "d", shiftSymbol: "D" }),
@@ -99,30 +65,11 @@ const keyboardRows: Row[] = [
       createKeyboardKey({ mainSymbol: "j", shiftSymbol: "J" }),
       createKeyboardKey({ mainSymbol: "k", shiftSymbol: "K" }),
       createKeyboardKey({ mainSymbol: "l", shiftSymbol: "L" }),
-      createKeyboardKey({
-        mainSymbol: ";",
-        shiftSymbol: ":",
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: "'",
-        shiftSymbol: '"',
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: "Enter",
-        widthMultiplier: 3.2,
-        isVisible: false,
-      }),
     ],
   },
   {
+    styles: "ml-28",
     keyboardKeys: [
-      createKeyboardKey({
-        mainSymbol: "Shift",
-        isVisible: false,
-        widthMultiplier: 2.4,
-      }),
       createKeyboardKey({ mainSymbol: "z", shiftSymbol: "Z" }),
       createKeyboardKey({ mainSymbol: "x", shiftSymbol: "X" }),
       createKeyboardKey({ mainSymbol: "c", shiftSymbol: "C" }),
@@ -130,24 +77,10 @@ const keyboardRows: Row[] = [
       createKeyboardKey({ mainSymbol: "b", shiftSymbol: "B" }),
       createKeyboardKey({ mainSymbol: "n", shiftSymbol: "N" }),
       createKeyboardKey({ mainSymbol: "m", shiftSymbol: "M" }),
-      createKeyboardKey({
-        mainSymbol: ",",
-        shiftSymbol: "<",
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: ".",
-        shiftSymbol: ">",
-        isVisible: false,
-      }),
-      createKeyboardKey({
-        mainSymbol: "/",
-        shiftSymbol: "?",
-        isVisible: false,
-      }),
     ],
   },
   {
+    styles: "ml-54",
     keyboardKeys: [createKeyboardKey({ mainSymbol: " ", visualName: "Space" })],
   },
 ];

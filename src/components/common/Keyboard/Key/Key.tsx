@@ -11,8 +11,7 @@ const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
     <div
       className={`shrink-0 relative h-12 bg-gray-300 border border-gray-900
                 ${isPressed ? "bg-green-700 text-gray-50" : ""} 
-              rounded-sm font-bold ${!keyboardKey.isVisible && "invisible"}`}
-      style={{ width: `${3 * keyboardKey.widthMultiplier}rem` }}
+              rounded-sm font-bold w-12`}
       key={keyboardKey.mainSymbol}
     >
       <div className="absolute top-1 left-1">
