@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 interface KeyboardKey {
   mainSymbol: string;
   widthMultiplier: number;
@@ -104,15 +106,44 @@ const keyboardRows: KeyboardKey[][] = [
 ];
 
 const Keyboard = () => {
+  const [downKeys, setDownKeys] = useState<string[]>([]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      setDownKeys((prev) =>
+        !prev.includes(event.key) ? [...prev, event.key] : prev
+      );
+    };
+
+    const onKeyUp = (event: KeyboardEvent) => {
+      setDownKeys((prev) =>
+        prev.filter((keyboardKey) => keyboardKey !== event.key)
+      );
+    };
+
+    addEventListener("keydown", onKeyDown);
+    addEventListener("keyup", onKeyUp);
+
+    return () => {
+      removeEventListener("keydown", onKeyDown);
+      removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
   return (
     <section className="grid grid-cols-1 gap-2 mt-12 w-fit mx-auto">
       {keyboardRows.map((row, index) => (
         <div className="flex gap-2" key={index}>
           {row.map((keyboardKey) => (
             <div
-              className={`shrink-0 relative h-12 bg-gray-300 rounded-sm font-bold ${
-                !keyboardKey.isVisible && "invisible"
-              }`}
+              className={`shrink-0 relative h-12 bg-gray-300 border border-gray-900
+                ${
+                  downKeys.includes(keyboardKey.mainSymbol) ||
+                  downKeys.includes(keyboardKey.shiftSymbol)
+                    ? "bg-green-700 text-gray-50"
+                    : ""
+                } 
+              rounded-sm font-bold ${!keyboardKey.isVisible && "invisible"}`}
               style={{ width: `${3 * keyboardKey.widthMultiplier}rem` }}
               key={keyboardKey.mainSymbol}
             >
