@@ -3,7 +3,7 @@ import Keyboard from "../../common/Keyboard/Keyboard";
 
 const Main = () => {
   return (
-    <main className="h-full">
+    <main className="h-full px-10">
       <div className="flex h-[50%] items-end justify-center">
         <TextType />
       </div>
