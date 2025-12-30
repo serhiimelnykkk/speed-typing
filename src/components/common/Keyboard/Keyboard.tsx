@@ -5,12 +5,14 @@ export interface KeyboardKey {
   mainSymbol: string;
   shiftSymbol?: string;
   visualName?: string;
+  styles?: string;
 }
 
 const defaultKeyboardKey: Required<KeyboardKey> = {
   mainSymbol: "",
   shiftSymbol: "",
   visualName: "",
+  styles: "",
 };
 
 const createKeyboardKey = (options: KeyboardKey): Required<KeyboardKey> => {
@@ -81,7 +83,13 @@ const keyboardRows: Row[] = [
   },
   {
     styles: "ml-54",
-    keyboardKeys: [createKeyboardKey({ mainSymbol: " ", visualName: "Space" })],
+    keyboardKeys: [
+      createKeyboardKey({
+        mainSymbol: " ",
+        visualName: "Space",
+        styles: "w-78",
+      }),
+    ],
   },
 ];
 

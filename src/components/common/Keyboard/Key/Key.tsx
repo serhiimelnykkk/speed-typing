@@ -9,9 +9,9 @@ interface KeyProps {
 const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
   return (
     <div
-      className={`shrink-0 relative h-12 bg-gray-300 border border-gray-900
+      className={`relative h-12 bg-gray-300 border border-gray-900
                 ${isPressed ? "bg-green-700 text-gray-50" : ""} 
-              rounded-sm font-bold w-12`}
+              rounded-sm font-bold w-12 ${keyboardKey.styles}`}
       key={keyboardKey.mainSymbol}
     >
       <div className="absolute top-1 left-1">
