@@ -26,7 +26,7 @@ interface Row {
 
 const keyboardRows: Row[] = [
   {
-    styles: "ml-12",
+    styles: "md:ml-12",
     keyboardKeys: [
       createKeyboardKey({ mainSymbol: "1", shiftSymbol: "!" }),
       createKeyboardKey({ mainSymbol: "2", shiftSymbol: "@" }),
@@ -41,7 +41,7 @@ const keyboardRows: Row[] = [
     ],
   },
   {
-    styles: "ml-18",
+    styles: "md:ml-18",
     keyboardKeys: [
       createKeyboardKey({ mainSymbol: "q", shiftSymbol: "Q" }),
       createKeyboardKey({ mainSymbol: "w", shiftSymbol: "W" }),
@@ -56,7 +56,7 @@ const keyboardRows: Row[] = [
     ],
   },
   {
-    styles: "ml-22",
+    styles: "md:ml-22",
     keyboardKeys: [
       createKeyboardKey({ mainSymbol: "a", shiftSymbol: "A" }),
       createKeyboardKey({ mainSymbol: "s", shiftSymbol: "S" }),
@@ -70,7 +70,7 @@ const keyboardRows: Row[] = [
     ],
   },
   {
-    styles: "ml-28",
+    styles: "md:ml-28",
     keyboardKeys: [
       createKeyboardKey({ mainSymbol: "z", shiftSymbol: "Z" }),
       createKeyboardKey({ mainSymbol: "x", shiftSymbol: "X" }),
@@ -82,7 +82,7 @@ const keyboardRows: Row[] = [
     ],
   },
   {
-    styles: "ml-54",
+    styles: "md:ml-54",
     keyboardKeys: [
       createKeyboardKey({
         mainSymbol: " ",
