@@ -3,7 +3,7 @@ import TextType from "../../common/TextType/TextType";
 const Main = () => {
   return (
     <main className="h-full">
-      <div className="flex h-full items-center justify-center">
+      <div className="flex h-[50%] items-end justify-center">
         <TextType />
       </div>
     </main>
