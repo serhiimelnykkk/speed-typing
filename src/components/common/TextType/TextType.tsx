@@ -13,7 +13,7 @@ const generateText = () =>
   ).reduce((result, current) => (result += " " + current));
 
 const TextType = () => {
-  const { typedText, textLeft, correctButtonPressed } = useText(generateText());
+  const { typedText, textLeft, correctButtonPressed } = useText(generateText);
 
   return (
     <p className="text-4xl/14 w-max font-mono">
