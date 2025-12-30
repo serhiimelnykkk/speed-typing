@@ -1,22 +1,30 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const useText = (initialText: string) => {
+const useText = (nextSequence: () => string) => {
+  const nextSequenceRef = useRef(nextSequence);
+
+  const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [typedText, setTypedText] = useState<string>("");
-  const [textLeft, setTextLeft] = useState(initialText);
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
+
+  const textLeft = currentSequence.slice(typedText.length);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.length === 1) {
         if (event.key === textLeft[0]) {
-          setTypedText((prev) =>
-            prev.length < initialText.length
-              ? prev + initialText[prev.length]
-              : prev
-          );
-          setTextLeft((prev) => (prev.length > 0 ? prev.slice(1) : prev));
-          setCorrectButtonPressed(true);
+          if (textLeft.length === 1) {
+            const sequence = nextSequenceRef.current();
+            setTypedText("");
+            setCurrentSequence(sequence);
+          } else {
+            setTypedText((prev) =>
+              prev.length < currentSequence.length
+                ? prev + currentSequence[prev.length]
+                : prev
+            );
+            setCorrectButtonPressed(true);
+          }
         } else {
           setCorrectButtonPressed(false);
         }
@@ -26,7 +34,7 @@ const useText = (initialText: string) => {
     addEventListener("keydown", onKeyDown);
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, [textLeft, initialText]);
+  }, [textLeft, currentSequence, nextSequenceRef]);
 
   return { typedText, textLeft, correctButtonPressed };
 };
