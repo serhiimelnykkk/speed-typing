@@ -4,7 +4,7 @@ import { useEffect } from "react";
 const useText = (initialText: string) => {
   const [typedText, setTypedText] = useState<string>("");
   const [textLeft, setTextLeft] = useState(initialText);
-  const [correctButtonPressed, setCorrectButtonPressed] = useState(false);
+  const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
