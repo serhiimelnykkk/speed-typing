@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import Key from "./Key/Key";
 
-interface KeyboardKey {
+export interface KeyboardKey {
   mainSymbol: string;
   widthMultiplier: number;
   shiftSymbol: string;
@@ -135,25 +136,14 @@ const Keyboard = () => {
       {keyboardRows.map((row, index) => (
         <div className="flex gap-2" key={index}>
           {row.map((keyboardKey) => (
-            <div
-              className={`shrink-0 relative h-12 bg-gray-300 border border-gray-900
-                ${
-                  downKeys.includes(keyboardKey.mainSymbol) ||
-                  downKeys.includes(keyboardKey.shiftSymbol)
-                    ? "bg-green-700 text-gray-50"
-                    : ""
-                } 
-              rounded-sm font-bold ${!keyboardKey.isVisible && "invisible"}`}
-              style={{ width: `${3 * keyboardKey.widthMultiplier}rem` }}
+            <Key
               key={keyboardKey.mainSymbol}
-            >
-              <div className="absolute top-1 left-1">
-                {keyboardKey.mainSymbol}
-              </div>
-              <div className="absolute bottom-1 right-1 text-sm">
-                {keyboardKey.shiftSymbol}
-              </div>
-            </div>
+              keyboardKey={keyboardKey}
+              isPressed={
+                downKeys.includes(keyboardKey.mainSymbol) ||
+                downKeys.includes(keyboardKey.shiftSymbol)
+              }
+            />
           ))}
         </div>
       ))}

@@ -1,0 +1,26 @@
+import { type KeyboardKey } from "../Keyboard";
+import { memo } from "react";
+
+interface KeyProps {
+  isPressed: boolean;
+  keyboardKey: KeyboardKey;
+}
+
+const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
+  return (
+    <div
+      className={`shrink-0 relative h-12 bg-gray-300 border border-gray-900
+                ${isPressed ? "bg-green-700 text-gray-50" : ""} 
+              rounded-sm font-bold ${!keyboardKey.isVisible && "invisible"}`}
+      style={{ width: `${3 * keyboardKey.widthMultiplier}rem` }}
+      key={keyboardKey.mainSymbol}
+    >
+      <div className="absolute top-1 left-1">{keyboardKey.mainSymbol}</div>
+      <div className="absolute bottom-1 right-1 text-sm">
+        {keyboardKey.shiftSymbol}
+      </div>
+    </div>
+  );
+});
+
+export default Key;
