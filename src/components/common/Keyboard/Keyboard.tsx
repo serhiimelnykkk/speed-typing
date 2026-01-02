@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Key from "./Key/Key";
+import { usePauseContext } from "../../../context/PauseContext";
 
 export interface KeyboardKey {
   mainSymbol: string;
@@ -95,6 +96,7 @@ const keyboardRows: Row[] = [
 
 const Keyboard = () => {
   const [downKeys, setDownKeys] = useState<string[]>([]);
+  const isPaused = usePauseContext();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -109,14 +111,16 @@ const Keyboard = () => {
       );
     };
 
-    addEventListener("keydown", onKeyDown);
-    addEventListener("keyup", onKeyUp);
+    if (!isPaused) {
+      addEventListener("keydown", onKeyDown);
+      addEventListener("keyup", onKeyUp);
+    }
 
     return () => {
       removeEventListener("keydown", onKeyDown);
       removeEventListener("keyup", onKeyUp);
     };
-  }, []);
+  }, [isPaused]);
 
   return (
     <section className="grid grid-cols-1 gap-2 mt-12 w-fit mx-auto">
