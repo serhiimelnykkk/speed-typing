@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { usePauseContext } from "../../../../context/PauseContext";
 
 const useText = (nextSequence: () => string) => {
   const nextSequenceRef = useRef(nextSequence);
@@ -8,6 +9,8 @@ const useText = (nextSequence: () => string) => {
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
 
   const textLeft = currentSequence.slice(typedText.length);
+
+  const isPaused = usePauseContext();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -31,10 +34,12 @@ const useText = (nextSequence: () => string) => {
       }
     };
 
-    addEventListener("keydown", onKeyDown);
+    if (!isPaused) {
+      addEventListener("keydown", onKeyDown);
+    }
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, [textLeft, currentSequence, nextSequenceRef]);
+  }, [textLeft, currentSequence, nextSequenceRef, isPaused]);
 
   return { typedText, textLeft, correctButtonPressed };
 };
