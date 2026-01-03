@@ -19,7 +19,7 @@ const TextType = () => {
   const isPaused = usePauseContext();
 
   return (
-    <section className="relative text-4xl/14 w-max font-mono">
+    <section className="relative text-4xl/14 w-fit font-mono">
       <div
         className={`absolute inset-0 backdrop-blur-xs flex items-center justify-center transition-opacity ${
           isPaused ? "opacity-100" : "opacity-0"
@@ -35,15 +35,17 @@ const TextType = () => {
           to unpause.
         </div>
       </div>
-      <span className="text-gray-500">
-        {typedText.replaceAll(" ", DOT_WITH_ZERO_SPACE)}
-      </span>
-      <span
-        className={correctButtonPressed ? "text-green-600" : "text-red-600"}
-      >
-        {textLeft.charAt(0).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
-      </span>
-      <span>{textLeft.slice(1).replaceAll(" ", DOT_WITH_ZERO_SPACE)}</span>
+      <div className="px-1">
+        <span className="text-gray-500">
+          {typedText.replaceAll(" ", DOT_WITH_ZERO_SPACE)}
+        </span>
+        <span
+          className={correctButtonPressed ? "text-green-600" : "text-red-600"}
+        >
+          {textLeft.charAt(0).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
+        </span>
+        <span>{textLeft.slice(1).replaceAll(" ", DOT_WITH_ZERO_SPACE)}</span>
+      </div>
     </section>
   );
 };

@@ -1,5 +1,6 @@
 import TextType from "../../common/TextType/TextType";
 import Keyboard from "../../common/Keyboard/Keyboard";
+import TextStatus from "../../common/TextStatus/TextStatus";
 import { PauseContext } from "../../../context/PauseContext";
 import { useEffect, useState } from "react";
 
@@ -19,9 +20,10 @@ const Main = () => {
   }, []);
 
   return (
-    <main className="h-full px-10">
+    <main className="size-full px-10 ">
       <PauseContext value={isPaused}>
-        <div className="flex h-[50%] items-end justify-center">
+        <div className="flex flex-col h-[50%] justify-end">
+          <TextStatus />
           <TextType />
         </div>
         <Keyboard />

@@ -6,7 +6,10 @@ const TextStatus = () => {
   return (
     <nav className="border-b border-gray-400 border-solid py-2 font-mono">
       <div className="">
-        Pause <kbd>Esc</kbd>{" "}
+        Pause{" "}
+        <kbd className="bg-gray-600 px-2 py-1 text-sm text-gray-50 rounded-sm font-mono align-middle">
+          Esc
+        </kbd>{" "}
         <span
           className={`inline-block ${
             isPaused ? "bg-green-600" : "bg-red-600"
