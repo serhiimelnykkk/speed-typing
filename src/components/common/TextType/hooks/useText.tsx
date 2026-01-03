@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { usePauseContext } from "../../../../context/PauseContext";
+import { useWpmDispatch } from "../../../../context/WpmContext";
 
 const useText = (nextSequence: () => string) => {
   const nextSequenceRef = useRef(nextSequence);
@@ -17,26 +18,29 @@ const useText = (nextSequence: () => string) => {
 
   const startTime = useRef(0);
 
+  const dispatch = useWpmDispatch();
+
   useEffect(() => {
     startTime.current = performance.now();
   }, []);
 
   const countChar = () => totalChars.current++;
   const countError = () => totalErrors.current++;
-  const update = () => {
-    const endTime = performance.now();
-    const timeElapsedMinutes = (endTime - startTime.current) / 60 / 1000;
-
-    const wpm =
-      totalChars.current / 5 / timeElapsedMinutes -
-      totalErrors.current / timeElapsedMinutes;
-
-    const finalWpm = Math.round(wpm);
-
-    console.log(finalWpm);
-  };
 
   useEffect(() => {
+    const update = () => {
+      const endTime = performance.now();
+      const timeElapsedMinutes = (endTime - startTime.current) / 60 / 1000;
+
+      const wpm =
+        totalChars.current / 5 / timeElapsedMinutes -
+        totalErrors.current / timeElapsedMinutes;
+
+      const finalWpm = Math.round(wpm);
+
+      dispatch((prev) => (prev > 0 ? (prev + finalWpm) / 2 : finalWpm));
+    };
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.length === 1) {
         if (event.key === textLeft[0]) {
@@ -66,7 +70,7 @@ const useText = (nextSequence: () => string) => {
     }
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, [textLeft, currentSequence, nextSequenceRef, isPaused]);
+  }, [textLeft, currentSequence, nextSequenceRef, isPaused, dispatch]);
 
   return { typedText, textLeft, correctButtonPressed };
 };
