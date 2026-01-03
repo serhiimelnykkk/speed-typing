@@ -22,12 +22,11 @@ const useText = (nextSequence: () => string) => {
 
   useEffect(() => {
     startTime.current = performance.now();
-  }, []);
-
-  const countChar = () => totalChars.current++;
-  const countError = () => totalErrors.current++;
+  }, [currentSequence]);
 
   useEffect(() => {
+    const countChar = () => totalChars.current++;
+    const countError = () => totalErrors.current++;
     const update = () => {
       const endTime = performance.now();
       const timeElapsedMinutes = (endTime - startTime.current) / 60 / 1000;
@@ -36,9 +35,14 @@ const useText = (nextSequence: () => string) => {
         totalChars.current / 5 / timeElapsedMinutes -
         totalErrors.current / timeElapsedMinutes;
 
-      const finalWpm = Math.round(wpm);
+      const roundedWpm = Math.round(wpm);
 
-      dispatch((prev) => (prev > 0 ? (prev + finalWpm) / 2 : finalWpm));
+      totalChars.current = 0;
+      totalErrors.current = 0;
+
+      dispatch((prev) =>
+        prev > 0 ? Math.round((prev + roundedWpm) / 2) : roundedWpm
+      );
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -48,8 +52,8 @@ const useText = (nextSequence: () => string) => {
           if (textLeft.length === 1) {
             const sequence = nextSequenceRef.current();
             setTypedText("");
-            setCurrentSequence(sequence);
             update();
+            setCurrentSequence(sequence);
           } else {
             setTypedText((prev) =>
               prev.length < currentSequence.length
