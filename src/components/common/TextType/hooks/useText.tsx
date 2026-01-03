@@ -12,14 +12,40 @@ const useText = (nextSequence: () => string) => {
 
   const isPaused = usePauseContext();
 
+  const totalChars = useRef(0);
+  const totalErrors = useRef(0);
+
+  const startTime = useRef(0);
+
+  useEffect(() => {
+    startTime.current = performance.now();
+  }, []);
+
+  const countChar = () => totalChars.current++;
+  const countError = () => totalErrors.current++;
+  const update = () => {
+    const endTime = performance.now();
+    const timeElapsedMinutes = (endTime - startTime.current) / 60 / 1000;
+
+    const wpm =
+      totalChars.current / 5 / timeElapsedMinutes -
+      totalErrors.current / timeElapsedMinutes;
+
+    const finalWpm = Math.round(wpm);
+
+    console.log(finalWpm);
+  };
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.length === 1) {
         if (event.key === textLeft[0]) {
+          countChar();
           if (textLeft.length === 1) {
             const sequence = nextSequenceRef.current();
             setTypedText("");
             setCurrentSequence(sequence);
+            update();
           } else {
             setTypedText((prev) =>
               prev.length < currentSequence.length
@@ -29,6 +55,7 @@ const useText = (nextSequence: () => string) => {
             setCorrectButtonPressed(true);
           }
         } else {
+          countError();
           setCorrectButtonPressed(false);
         }
       }
