@@ -8,6 +8,7 @@ const useText = (nextSequence: () => string) => {
   const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [typedText, setTypedText] = useState<string>("");
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
+  const [sequenceStarted, setSequenceStarted] = useState(false);
 
   const textLeft = currentSequence.slice(typedText.length);
 
@@ -18,18 +19,37 @@ const useText = (nextSequence: () => string) => {
 
   const startTime = useRef(0);
 
+  const pauseTime = useRef(0);
+  const pauseStartedAt = useRef(0);
+
   const dispatch = useWpmDispatch();
 
   useEffect(() => {
-    startTime.current = performance.now();
-  }, [currentSequence]);
+    if (sequenceStarted) {
+      startTime.current = performance.now();
+      pauseStartedAt.current = 0;
+      pauseTime.current = 0;
+    }
+  }, [sequenceStarted]);
+
+  useEffect(() => {
+    if (isPaused) {
+      pauseStartedAt.current = performance.now();
+    } else {
+      if (pauseStartedAt.current) {
+        pauseTime.current += performance.now() - pauseStartedAt.current;
+        pauseStartedAt.current = 0;
+      }
+    }
+  }, [isPaused]);
 
   useEffect(() => {
     const countChar = () => totalChars.current++;
     const countError = () => totalErrors.current++;
     const update = () => {
       const endTime = performance.now();
-      const timeElapsedMinutes = (endTime - startTime.current) / 60 / 1000;
+      const timeElapsedMinutes =
+        (endTime - startTime.current - pauseTime.current) / 60 / 1000;
 
       const wpm =
         totalChars.current / 5 / timeElapsedMinutes -
@@ -43,10 +63,15 @@ const useText = (nextSequence: () => string) => {
       dispatch((prev) =>
         prev > 0 ? Math.round((prev + roundedWpm) / 2) : roundedWpm
       );
+
+      setSequenceStarted(false);
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.length === 1) {
+        if (typedText.length === 0) {
+          setSequenceStarted(true);
+        }
         if (event.key === textLeft[0]) {
           countChar();
           if (textLeft.length === 1) {
@@ -74,7 +99,14 @@ const useText = (nextSequence: () => string) => {
     }
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, [textLeft, currentSequence, nextSequenceRef, isPaused, dispatch]);
+  }, [
+    textLeft,
+    currentSequence,
+    nextSequenceRef,
+    isPaused,
+    dispatch,
+    typedText.length,
+  ]);
 
   return { typedText, textLeft, correctButtonPressed };
 };
