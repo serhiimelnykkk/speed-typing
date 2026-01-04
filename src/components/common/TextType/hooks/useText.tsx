@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePauseContext } from "../../../../context/PauseContext";
 import { useWpmDispatch } from "../../../../context/WpmContext";
+import keycode from "keycode";
 
 const useText = (nextSequence: () => string) => {
   const nextSequenceRef = useRef(nextSequence);
@@ -68,11 +69,18 @@ const useText = (nextSequence: () => string) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key.length === 1) {
+
+      let key = keycode(event);
+
+      if (key === "space") {
+        key = " ";
+      }
+
+      if (key.length === 1) {
         if (typedText.length === 0) {
           setSequenceStarted(true);
         }
-        if (event.key === textLeft[0]) {
+        if (key === textLeft[0]) {
           countChar();
           if (textLeft.length === 1) {
             const sequence = nextSequenceRef.current();
