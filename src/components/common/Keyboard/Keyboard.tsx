@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Key from "./Key/Key";
 import { usePauseContext } from "../../../context/PauseContext";
+import keycode from "keycode";
 
 export interface KeyboardKey {
   mainSymbol: string;
@@ -100,15 +101,15 @@ const Keyboard = () => {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      setDownKeys((prev) =>
-        !prev.includes(event.key) ? [...prev, event.key] : prev
-      );
+      const key = keycode(event);
+
+      setDownKeys((prev) => (!event.repeat ? [...prev, key] : prev));
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
-      setDownKeys((prev) =>
-        prev.filter((keyboardKey) => keyboardKey !== event.key)
-      );
+      const key = keycode(event);
+
+      setDownKeys((prev) => prev.filter((keyboardKey) => keyboardKey !== key));
     };
 
     if (!isPaused) {
