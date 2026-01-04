@@ -79,6 +79,10 @@ const useText = (nextSequence: () => string) => {
         key = " ";
       }
 
+      if (event.key !== key.toLowerCase()) {
+        key = key.toUpperCase();
+      }
+
       if (key.length === 1) {
         if (typedText.length === 0) {
           setSequenceStarted(true);
