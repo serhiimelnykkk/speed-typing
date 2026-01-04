@@ -69,6 +69,9 @@ const useText = (nextSequence: () => string) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) {
+        return;
+      }
 
       let key = keycode(event);
 

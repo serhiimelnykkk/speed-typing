@@ -103,7 +103,7 @@ const Keyboard = () => {
     const onKeyDown = (event: KeyboardEvent) => {
       const key = keycode(event);
 
-      setDownKeys((prev) => (!prev.includes(key) ? [...prev, key] : prev));
+      setDownKeys((prev) => (!event.repeat ? [...prev, key] : prev));
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
