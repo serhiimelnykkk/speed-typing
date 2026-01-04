@@ -1,11 +1,13 @@
 import { usePauseContext } from "../../../context/PauseContext";
+import { useWpm } from "../../../context/WpmContext";
 
 const TextStatus = () => {
   const isPaused = usePauseContext();
+  const wordsPerMinute = useWpm();
 
   return (
-    <nav className="border-b border-gray-400 border-solid py-2 font-mono">
-      <div className="">
+    <nav className="border-b border-gray-400 border-solid py-2 font-mono flex justify-between">
+      <div>
         Pause{" "}
         <kbd className="bg-gray-600 px-2 py-1 text-sm text-gray-50 rounded-sm font-mono align-middle">
           Esc
@@ -18,6 +20,7 @@ const TextStatus = () => {
           {isPaused ? "ON" : "OFF"}
         </span>
       </div>
+      <div>Words Per Minute: {wordsPerMinute}</div>
     </nav>
   );
 };

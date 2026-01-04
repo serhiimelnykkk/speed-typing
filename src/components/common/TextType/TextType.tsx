@@ -19,7 +19,7 @@ const TextType = () => {
   const isPaused = usePauseContext();
 
   return (
-    <section className="relative text-4xl/14 w-fit font-mono">
+    <section className="relative text-4xl/14 font-mono">
       <div
         className={`absolute inset-0 backdrop-blur-xs flex items-center justify-center transition-opacity ${
           isPaused ? "opacity-100" : "opacity-0"

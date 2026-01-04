@@ -3,9 +3,14 @@ import Keyboard from "../../common/Keyboard/Keyboard";
 import TextStatus from "../../common/TextStatus/TextStatus";
 import { PauseContext } from "../../../context/PauseContext";
 import { useEffect, useState } from "react";
+import {
+  WpmStateContext,
+  WpmDispatchContext,
+} from "../../../context/WpmContext";
 
 const Main = () => {
   const [isPaused, setIsPaused] = useState(false);
+  const [wordsPerMinute, setWordsPerMinute] = useState(0);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -23,8 +28,12 @@ const Main = () => {
     <main className="size-full px-10 ">
       <PauseContext value={isPaused}>
         <div className="flex flex-col h-[50%] justify-end">
-          <TextStatus />
-          <TextType />
+          <WpmStateContext value={wordsPerMinute}>
+            <TextStatus />
+          </WpmStateContext>
+          <WpmDispatchContext value={setWordsPerMinute}>
+            <TextType />
+          </WpmDispatchContext>
         </div>
         <Keyboard />
       </PauseContext>
