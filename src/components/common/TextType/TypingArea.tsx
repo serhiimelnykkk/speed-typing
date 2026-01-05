@@ -13,7 +13,7 @@ const generateText = () =>
     }) as string[]
   ).reduce((result, current) => (result += " " + current));
 
-const TextType = () => {
+const TypingArea = () => {
   const { enteredText, remainingText, correctButtonPressed } =
     useText(generateText);
 
@@ -53,4 +53,4 @@ const TextType = () => {
   );
 };
 
-export default TextType;
+export default TypingArea;
