@@ -1,4 +1,4 @@
-import TypingArea from "../../common/TextType/TypingArea";
+import TypingArea from "../../common/TypingArea/TypingArea";
 import Keyboard from "../../common/Keyboard/Keyboard";
 import TextStatus from "../../common/TextStatus/TextStatus";
 import { PauseContext } from "../../../context/PauseContext";
