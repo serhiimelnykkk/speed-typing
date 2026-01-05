@@ -3,127 +3,147 @@ import { usePauseContext } from "../../../../context/PauseContext";
 import { useWpmDispatch } from "../../../../context/WpmContext";
 import keycode from "keycode";
 
-const useText = (nextSequence: () => string) => {
-  const nextSequenceRef = useRef(nextSequence);
-
-  const [currentSequence, setCurrentSequence] = useState(nextSequence());
-  const [typedText, setTypedText] = useState<string>("");
-  const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
-  const [sequenceStarted, setSequenceStarted] = useState(false);
-
-  const textLeft = currentSequence.slice(typedText.length);
-
-  const isPaused = usePauseContext();
-
-  const totalChars = useRef(0);
-  const totalErrors = useRef(0);
-
-  const startTime = useRef(0);
-
-  const pauseTime = useRef(0);
+const useTime = () => {
+  const totalTime = useRef(0);
   const pauseStartedAt = useRef(0);
 
-  const dispatch = useWpmDispatch();
+  const resetTimer = () => {
+    totalTime.current = performance.now();
+  };
+  const getTimeElapsed = () =>
+    (performance.now() - totalTime.current) / 60 / 1000;
 
-  useEffect(() => {
-    if (sequenceStarted) {
-      startTime.current = performance.now();
-      pauseStartedAt.current = 0;
-      pauseTime.current = 0;
-    }
-  }, [sequenceStarted]);
+  const isPaused = usePauseContext();
 
   useEffect(() => {
     if (isPaused) {
       pauseStartedAt.current = performance.now();
     } else {
       if (pauseStartedAt.current) {
-        pauseTime.current += performance.now() - pauseStartedAt.current;
+        totalTime.current += performance.now() - pauseStartedAt.current;
         pauseStartedAt.current = 0;
       }
     }
   }, [isPaused]);
 
-  useEffect(() => {
-    const countChar = () => totalChars.current++;
-    const countError = () => totalErrors.current++;
-    const update = () => {
-      const endTime = performance.now();
-      const timeElapsedMinutes =
-        (endTime - startTime.current - pauseTime.current) / 60 / 1000;
+  return { resetTimer, getTimeElapsed };
+};
 
-      const wpm =
-        totalChars.current / 5 / timeElapsedMinutes -
-        totalErrors.current / timeElapsedMinutes;
+const calculateWpm = (chars: number, errors: number, timeElapsed: number) => {
+  const wpm = chars / 5 / timeElapsed - errors / timeElapsed;
 
-      const roundedWpm = Math.round(wpm);
+  const roundedWpm = Math.round(wpm);
 
-      totalChars.current = 0;
-      totalErrors.current = 0;
+  return roundedWpm;
+};
 
-      dispatch((prev) =>
-        prev > 0 ? Math.round((prev + roundedWpm) / 2) : roundedWpm
-      );
+const useChars = () => {
+  const totalChars = useRef(0);
+  const totalErrors = useRef(0);
 
-      setSequenceStarted(false);
-    };
+  const recordChar = () => totalChars.current++;
+  const recordError = () => totalErrors.current++;
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.repeat) {
-        return;
-      }
+  const dispatch = useWpmDispatch();
 
-      let key = keycode(event);
+  const update = (timeElapsed: number) => {
+    const wpm = calculateWpm(
+      totalChars.current,
+      totalErrors.current,
+      timeElapsed
+    );
 
-      if (key === "space") {
-        key = " ";
-      }
+    dispatch((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
 
-      if (event.key !== key.toLowerCase()) {
-        key = key.toUpperCase();
-      }
+    totalChars.current = 0;
+    totalErrors.current = 0;
+  };
 
-      if (key.length === 1) {
-        if (typedText.length === 0) {
-          setSequenceStarted(true);
-        }
-        if (key === textLeft[0]) {
-          countChar();
-          if (textLeft.length === 1) {
-            const sequence = nextSequenceRef.current();
-            setTypedText("");
-            update();
-            setCurrentSequence(sequence);
-          } else {
-            setTypedText((prev) =>
-              prev.length < currentSequence.length
-                ? prev + currentSequence[prev.length]
-                : prev
-            );
-            setCorrectButtonPressed(true);
-          }
-        } else {
-          countError();
-          setCorrectButtonPressed(false);
-        }
-      }
-    };
+  return { recordChar, recordError, update };
+};
 
-    if (!isPaused) {
-      addEventListener("keydown", onKeyDown);
+const transformKey = (event: KeyboardEvent) => {
+  let key = keycode(event);
+  if (key === "space") {
+    key = " ";
+  }
+
+  if (event.key !== key.toLowerCase()) {
+    key = key.toUpperCase();
+  }
+
+  return key;
+};
+
+const useText = (nextSequence: () => string) => {
+  const nextSequenceRef = useRef(nextSequence);
+
+  const [currentSequence, setCurrentSequence] = useState(nextSequence());
+  const [enteredText, setEnteredText] = useState("");
+  const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
+
+  const remainingText = currentSequence.slice(enteredText.length);
+
+  const isPaused = usePauseContext();
+
+  const { resetTimer, getTimeElapsed } = useTime();
+  const { recordChar, recordError, update } = useChars();
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.repeat) {
+      return;
     }
 
-    return () => removeEventListener("keydown", onKeyDown);
-  }, [
-    textLeft,
-    currentSequence,
-    nextSequenceRef,
-    isPaused,
-    dispatch,
-    typedText.length,
-  ]);
+    const key = transformKey(event);
 
-  return { typedText, textLeft, correctButtonPressed };
+    if (key.length === 1) {
+      if (enteredText.length === 0) {
+        resetTimer();
+      }
+
+      if (key === remainingText[0]) {
+        recordChar();
+        if (remainingText.length === 1) {
+          const sequence = nextSequenceRef.current();
+          setEnteredText("");
+          update(getTimeElapsed());
+          setCurrentSequence(sequence);
+        } else {
+          setEnteredText((prev) =>
+            prev.length < currentSequence.length
+              ? prev + currentSequence[prev.length]
+              : prev
+          );
+          setCorrectButtonPressed(true);
+        }
+      } else {
+        recordError();
+        setCorrectButtonPressed(false);
+      }
+    }
+  };
+
+  const handleKeyDownRef = useRef(handleKeyDown);
+
+  useEffect(() => {
+    handleKeyDownRef.current = handleKeyDown;
+  });
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => handleKeyDownRef.current(event);
+
+    if (!isPaused) {
+      addEventListener("keydown", listener);
+    }
+
+    return () => removeEventListener("keydown", listener);
+  }, [isPaused]);
+
+  return {
+    enteredText,
+    remainingText,
+    correctButtonPressed,
+  };
 };
 
 export default useText;

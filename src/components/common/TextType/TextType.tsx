@@ -7,14 +7,15 @@ const DOT_WITH_ZERO_SPACE = "\u00B7\u200B";
 const generateText = () =>
   (
     generate({
-      max: 20,
-      min: 25,
+      max: 5,
+      min: 5,
       maxLength: 12,
     }) as string[]
   ).reduce((result, current) => (result += " " + current));
 
 const TextType = () => {
-  const { typedText, textLeft, correctButtonPressed } = useText(generateText);
+  const { enteredText, remainingText, correctButtonPressed } =
+    useText(generateText);
 
   const isPaused = usePauseContext();
 
@@ -37,14 +38,16 @@ const TextType = () => {
       </div>
       <div className="px-1">
         <span className="text-gray-500">
-          {typedText.replaceAll(" ", DOT_WITH_ZERO_SPACE)}
+          {enteredText.replaceAll(" ", DOT_WITH_ZERO_SPACE)}
         </span>
         <span
           className={correctButtonPressed ? "text-green-600" : "text-red-600"}
         >
-          {textLeft.charAt(0).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
+          {remainingText.charAt(0).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
         </span>
-        <span>{textLeft.slice(1).replaceAll(" ", DOT_WITH_ZERO_SPACE)}</span>
+        <span>
+          {remainingText.slice(1).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
+        </span>
       </div>
     </section>
   );
