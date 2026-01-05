@@ -1,22 +1,7 @@
-import { generate } from "random-words";
-import useText from "./hooks/useText";
 import { usePauseContext } from "../../../context/PauseContext";
-
-const DOT_WITH_ZERO_SPACE = "\u00B7\u200B";
-
-const generateText = () =>
-  (
-    generate({
-      max: 5,
-      min: 5,
-      maxLength: 12,
-    }) as string[]
-  ).reduce((result, current) => (result += " " + current));
+import TypingText from "./TypingText/TypingText";
 
 const TypingArea = () => {
-  const { enteredText, remainingText, correctButtonPressed } =
-    useText(generateText);
-
   const isPaused = usePauseContext();
 
   return (
@@ -37,17 +22,7 @@ const TypingArea = () => {
         </div>
       </div>
       <div className="px-1">
-        <span className="text-gray-500">
-          {enteredText.replaceAll(" ", DOT_WITH_ZERO_SPACE)}
-        </span>
-        <span
-          className={correctButtonPressed ? "text-green-600" : "text-red-600"}
-        >
-          {remainingText.charAt(0).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
-        </span>
-        <span>
-          {remainingText.slice(1).replaceAll(" ", DOT_WITH_ZERO_SPACE)}
-        </span>
+        <TypingText />
       </div>
     </section>
   );
