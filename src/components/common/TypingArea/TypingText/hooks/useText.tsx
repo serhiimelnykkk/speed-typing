@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { usePauseContext } from "../../../../context/PauseContext";
-import { useWpmDispatch } from "../../../../context/WpmContext";
+import { usePauseContext } from "../../../../../context/PauseContext";
+import { useWpmDispatch } from "../../../../../context/WpmContext";
 import keycode from "keycode";
 
 const useTime = () => {

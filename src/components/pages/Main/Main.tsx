@@ -1,4 +1,4 @@
-import TextType from "../../common/TextType/TextType";
+import TypingArea from "../../common/TypingArea/TypingArea";
 import Keyboard from "../../common/Keyboard/Keyboard";
 import TextStatus from "../../common/TextStatus/TextStatus";
 import { PauseContext } from "../../../context/PauseContext";
@@ -32,7 +32,7 @@ const Main = () => {
             <TextStatus />
           </WpmStateContext>
           <WpmDispatchContext value={setWordsPerMinute}>
-            <TextType />
+            <TypingArea />
           </WpmDispatchContext>
         </div>
         <Keyboard />
