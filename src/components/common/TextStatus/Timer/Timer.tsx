@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-const time = 30_000;
+const duration = 30_000;
 
 const Timer = () => {
-  const [timeRemaining, setTimeRemaining] = useState(time / 1000);
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
-  useEffect(() => {
+  const startTimer = () => {
+    if (timeRemaining > 0) return;
+
+    const endTime = duration + performance.now();
     const interval = setInterval(() => {
-      const remaining = Math.ceil((time - performance.now()) / 1000);
+      const remaining = Math.ceil((endTime - performance.now()) / 1000);
       if (remaining <= 0) {
         setTimeRemaining(0);
         clearInterval(interval);
@@ -15,14 +18,14 @@ const Timer = () => {
         setTimeRemaining(remaining);
       }
     }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
+  };
 
   return (
     <div className="flex gap-4">
       <span>Timer: {timeRemaining}</span>
-      <button className="cursor-pointer">Start</button>
+      <button onClick={startTimer} className="cursor-pointer">
+        Start
+      </button>
     </div>
   );
 };
