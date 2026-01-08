@@ -7,14 +7,16 @@ import {
   WpmStateContext,
   WpmDispatchContext,
 } from "../../../context/WpmContext";
+import { PauseLockContext } from "../../../context/PauseLockContext";
 
 const Main = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [wordsPerMinute, setWordsPerMinute] = useState(0);
+  const [isPauseLocked, setIsPauseLocked] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !isPauseLocked) {
         setIsPaused((prev) => !prev);
       }
     };
@@ -22,22 +24,24 @@ const Main = () => {
     addEventListener("keydown", onKeyDown);
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [isPauseLocked]);
 
   return (
-    <main className="size-full px-10 ">
-      <PauseContext value={isPaused}>
-        <div className="flex flex-col h-[50%] justify-end">
-          <WpmStateContext value={wordsPerMinute}>
-            <TextStatus />
-          </WpmStateContext>
-          <WpmDispatchContext value={setWordsPerMinute}>
-            <TypingArea />
-          </WpmDispatchContext>
-        </div>
-        <Keyboard />
-      </PauseContext>
-    </main>
+    <PauseContext value={isPaused}>
+      <PauseLockContext value={setIsPauseLocked}>
+        <main className="size-full px-10 ">
+          <div className="flex flex-col h-[50%] justify-end">
+            <WpmStateContext value={wordsPerMinute}>
+              <TextStatus />
+            </WpmStateContext>
+            <WpmDispatchContext value={setWordsPerMinute}>
+              <TypingArea />
+            </WpmDispatchContext>
+          </div>
+          <Keyboard />
+        </main>
+      </PauseLockContext>
+    </PauseContext>
   );
 };
 
