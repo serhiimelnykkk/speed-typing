@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const Timer = () => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  console.log("\nrerender\n");
+  const intervalRef = useRef(0);
+
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
+    setTimeRemaining(0);
+    setDuration(0);
+  };
 
   const startTimer = () => {
     if (timeRemaining > 0 || duration <= 0) return;
@@ -14,12 +20,12 @@ const Timer = () => {
     const interval = setInterval(() => {
       const remaining = Math.ceil((endTime - performance.now()) / 1000);
       if (remaining <= 0) {
-        setTimeRemaining(0);
-        clearInterval(interval);
+        stopTimer();
       } else {
         setTimeRemaining(remaining);
       }
     }, 100);
+    intervalRef.current = interval;
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,10 +39,14 @@ const Timer = () => {
       <button onClick={startTimer} className="cursor-pointer">
         Start
       </button>
-      <label>
-        <span>Time in Milleseconds</span>
+      <button onClick={stopTimer} className="cursor-pointer">
+        Stop
+      </button>
+      <label htmlFor="time">
+        <span>Time in Milliseconds</span>
       </label>
       <input
+        name="time"
         type="text"
         value={duration}
         onChange={handleChange}
