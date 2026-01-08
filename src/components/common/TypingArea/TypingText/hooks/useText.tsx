@@ -30,9 +30,14 @@ const useTime = () => {
 };
 
 const calculateWpm = (chars: number, errors: number, timeElapsed: number) => {
-  const wpm = chars / 5 / timeElapsed - errors / timeElapsed;
+  const WORD = 5;
 
-  const roundedWpm = Math.round(wpm);
+  const correctChars = chars - errors;
+  const accuracy = correctChars / chars;
+  const grossWpm = chars / WORD / timeElapsed;
+  const netWpm = grossWpm * accuracy;
+
+  const roundedWpm = Math.round(netWpm);
 
   return roundedWpm;
 };
@@ -86,6 +91,8 @@ const useText = (nextSequence: () => string) => {
 
   const isPaused = usePauseContext();
 
+  const lastError = useRef(false);
+
   const { resetTimer, getTimeElapsed } = useTime();
   const { recordChar, recordError, update } = useChars();
 
@@ -101,8 +108,11 @@ const useText = (nextSequence: () => string) => {
         resetTimer();
       }
 
-      if (key === remainingText[0]) {
+      if (!lastError.current) {
         recordChar();
+      }
+      if (key === remainingText[0]) {
+        lastError.current = false;
         if (remainingText.length === 1) {
           const sequence = nextSequenceRef.current();
           setEnteredText("");
@@ -117,7 +127,10 @@ const useText = (nextSequence: () => string) => {
           setCorrectButtonPressed(true);
         }
       } else {
-        recordError();
+        if (!lastError.current) {
+          recordError();
+          lastError.current = true;
+        }
         setCorrectButtonPressed(false);
       }
     }
