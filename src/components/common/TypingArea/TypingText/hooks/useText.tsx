@@ -30,9 +30,14 @@ const useTime = () => {
 };
 
 const calculateWpm = (chars: number, errors: number, timeElapsed: number) => {
-  const wpm = chars / 5 / timeElapsed - errors / timeElapsed;
+  const WORD = 5;
 
-  const roundedWpm = Math.round(wpm);
+  const correctChars = chars - errors;
+  const accuracy = correctChars / chars;
+  const grossWpm = chars / WORD / timeElapsed;
+  const netWpm = grossWpm * accuracy;
+
+  const roundedWpm = Math.round(netWpm);
 
   return roundedWpm;
 };
@@ -86,8 +91,35 @@ const useText = (nextSequence: () => string) => {
 
   const isPaused = usePauseContext();
 
+  const lastError = useRef(false);
+
   const { resetTimer, getTimeElapsed } = useTime();
   const { recordChar, recordError, update } = useChars();
+
+  const onCorrectKeyPress = () => {
+    lastError.current = false;
+    if (remainingText.length === 1) {
+      const sequence = nextSequenceRef.current();
+      setEnteredText("");
+      update(getTimeElapsed());
+      setCurrentSequence(sequence);
+    } else {
+      setEnteredText((prev) =>
+        prev.length < currentSequence.length
+          ? prev + currentSequence[prev.length]
+          : prev
+      );
+      setCorrectButtonPressed(true);
+    }
+  };
+
+  const onIncorrectKeyPress = () => {
+    if (!lastError.current) {
+      recordError();
+      lastError.current = true;
+    }
+    setCorrectButtonPressed(false);
+  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.repeat) {
@@ -101,24 +133,14 @@ const useText = (nextSequence: () => string) => {
         resetTimer();
       }
 
-      if (key === remainingText[0]) {
+      if (!lastError.current) {
         recordChar();
-        if (remainingText.length === 1) {
-          const sequence = nextSequenceRef.current();
-          setEnteredText("");
-          update(getTimeElapsed());
-          setCurrentSequence(sequence);
-        } else {
-          setEnteredText((prev) =>
-            prev.length < currentSequence.length
-              ? prev + currentSequence[prev.length]
-              : prev
-          );
-          setCorrectButtonPressed(true);
-        }
+      }
+
+      if (key === remainingText[0]) {
+        onCorrectKeyPress();
       } else {
-        recordError();
-        setCorrectButtonPressed(false);
+        onIncorrectKeyPress();
       }
     }
   };
