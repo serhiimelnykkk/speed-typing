@@ -29,7 +29,7 @@ const Main = () => {
   return (
     <PauseContext value={isPaused}>
       <PauseLockContext value={setIsPauseLocked}>
-        <main className="size-full px-10 ">
+        <main className="px-10 h-full max-w-350 mx-auto">
           <div className="flex flex-col h-[50%] justify-end">
             <WpmStateContext value={wordsPerMinute}>
               <TextStatus />
