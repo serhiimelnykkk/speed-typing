@@ -1,42 +1,33 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { usePauseLockContext } from "../../../../context/PauseLockContext";
 import { useNavigate } from "react-router";
+import useTimer from "./hooks/useTimer";
 
 const Timer = () => {
-  const [timeRemaining, setTimeRemaining] = useState(0);
   const [duration, setDuration] = useState(0);
-  const setIsPauseLocked = usePauseLockContext();
   const navigate = useNavigate();
 
-  const intervalRef = useRef(0);
+  const setPauseLock = usePauseLockContext();
 
-  const stopTimer = () => {
-    clearInterval(intervalRef.current);
-    setTimeRemaining(0);
+  const onStop = () => {
     setDuration(0);
-    setIsPauseLocked(false);
+    setPauseLock(false);
     navigate("/stats");
   };
 
-  const startTimer = () => {
-    if (timeRemaining > 0 || duration <= 0) return;
-    setIsPauseLocked(true);
-
-    const endTime = duration + performance.now();
-
-    const interval = setInterval(() => {
-      const remaining = Math.ceil((endTime - performance.now()) / 1000);
-      if (remaining <= 0) {
-        stopTimer();
-      } else {
-        setTimeRemaining(remaining);
-      }
-    }, 100);
-    intervalRef.current = interval;
+  const onStart = () => {
+    setPauseLock(true);
   };
 
+  const { startTimer, stopTimer, timeRemaining } = useTimer({
+    durationMilliseconds: duration,
+    onStart,
+    onStop,
+  });
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const duration = parseInt(event.target.value);
+    const parsedValue = parseInt(event.target.value);
+    const duration = isNaN(parsedValue) || parsedValue < 0 ? 0 : parsedValue;
     setDuration(duration);
   };
 
