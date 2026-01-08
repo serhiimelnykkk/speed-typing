@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
 import { usePauseLockContext } from "../../../../context/PauseLockContext";
+import { useNavigate } from "react-router";
 
 const Timer = () => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [duration, setDuration] = useState(0);
   const setIsPauseLocked = usePauseLockContext();
+  const navigate = useNavigate();
 
   const intervalRef = useRef(0);
 
@@ -13,6 +15,7 @@ const Timer = () => {
     setTimeRemaining(0);
     setDuration(0);
     setIsPauseLocked(false);
+    navigate("/stats");
   };
 
   const startTimer = () => {
