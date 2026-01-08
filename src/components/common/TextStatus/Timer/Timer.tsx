@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
+import { usePauseLockContext } from "../../../../context/PauseLockContext";
 
 const Timer = () => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [duration, setDuration] = useState(0);
+  const setIsPauseLocked = usePauseLockContext();
 
   const intervalRef = useRef(0);
 
@@ -10,10 +12,12 @@ const Timer = () => {
     clearInterval(intervalRef.current);
     setTimeRemaining(0);
     setDuration(0);
+    setIsPauseLocked(false);
   };
 
   const startTimer = () => {
     if (timeRemaining > 0 || duration <= 0) return;
+    setIsPauseLocked(true);
 
     const endTime = duration + performance.now();
 
