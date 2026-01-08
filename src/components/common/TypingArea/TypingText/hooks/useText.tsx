@@ -96,6 +96,31 @@ const useText = (nextSequence: () => string) => {
   const { resetTimer, getTimeElapsed } = useTime();
   const { recordChar, recordError, update } = useChars();
 
+  const onCorrectKeyPress = () => {
+    lastError.current = false;
+    if (remainingText.length === 1) {
+      const sequence = nextSequenceRef.current();
+      setEnteredText("");
+      update(getTimeElapsed());
+      setCurrentSequence(sequence);
+    } else {
+      setEnteredText((prev) =>
+        prev.length < currentSequence.length
+          ? prev + currentSequence[prev.length]
+          : prev
+      );
+      setCorrectButtonPressed(true);
+    }
+  };
+
+  const onIncorrectKeyPress = () => {
+    if (!lastError.current) {
+      recordError();
+      lastError.current = true;
+    }
+    setCorrectButtonPressed(false);
+  };
+
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.repeat) {
       return;
@@ -111,27 +136,11 @@ const useText = (nextSequence: () => string) => {
       if (!lastError.current) {
         recordChar();
       }
+
       if (key === remainingText[0]) {
-        lastError.current = false;
-        if (remainingText.length === 1) {
-          const sequence = nextSequenceRef.current();
-          setEnteredText("");
-          update(getTimeElapsed());
-          setCurrentSequence(sequence);
-        } else {
-          setEnteredText((prev) =>
-            prev.length < currentSequence.length
-              ? prev + currentSequence[prev.length]
-              : prev
-          );
-          setCorrectButtonPressed(true);
-        }
+        onCorrectKeyPress();
       } else {
-        if (!lastError.current) {
-          recordError();
-          lastError.current = true;
-        }
-        setCorrectButtonPressed(false);
+        onIncorrectKeyPress();
       }
     }
   };
