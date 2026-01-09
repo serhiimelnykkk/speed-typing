@@ -1,4 +1,4 @@
-import { useWpm } from "../../../context/WpmContext";
+import { useWpm } from "../../../../context/WpmContext";
 
 const Stats = () => {
   const wpm = useWpm();

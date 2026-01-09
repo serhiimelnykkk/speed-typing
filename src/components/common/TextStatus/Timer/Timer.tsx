@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { usePauseLockContext } from "../../../../context/PauseLockContext";
-import { useNavigate } from "react-router";
 import useTimer from "./hooks/useTimer";
+import { useMainViewDispatchContext } from "../../../../context/MainViewContext";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
-  const navigate = useNavigate();
 
   const setPauseLock = usePauseLockContext();
+  const dispatchMainView = useMainViewDispatchContext();
 
   const onStop = () => {
     setDuration(0);
     setPauseLock(false);
-    navigate("/stats");
+    dispatchMainView("stats");
   };
 
   const onStart = () => {
