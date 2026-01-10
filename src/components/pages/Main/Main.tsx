@@ -1,16 +1,17 @@
-import { PauseContext } from "../../../context/PauseContext";
-import { PauseLockContext } from "../../../context/PauseLockContext";
+import { PauseContext } from "@/context/PauseContext";
+import { PauseLockContext } from "@/context/PauseLockContext";
 import { useEffect, useState, useRef } from "react";
 
-import Typing from "./Typing/Typing";
-import type { MainViewType } from "../../../types";
-import { MainViewDispatchContext } from "../../../context/MainViewContext";
-import Stats from "./Stats/Stats";
+import type { MainViewType } from "@/types";
+import { MainViewDispatchContext } from "@/context/MainViewContext";
+
+import Stats from "@/components/pages/Main/Stats/Stats";
+import Typing from "@/components/pages/Main/Typing/Typing";
 
 import {
   WpmUpdateHandlerContext,
   type UpdateHandlerRef,
-} from "../../../context/WpmUpdateHandlerContext";
+} from "@/context/WpmUpdateHandlerContext";
 
 const Main = () => {
   const [isPaused, setIsPaused] = useState(false);

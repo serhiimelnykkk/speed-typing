@@ -1,5 +1,5 @@
-import { usePauseContext } from "../../../context/PauseContext";
-import TypingText from "./TypingText/TypingText";
+import { usePauseContext } from "@/context/PauseContext";
+import TypingText from "@/components/common/TypingArea/TypingText/TypingText";
 
 const TypingArea = () => {
   const isPaused = usePauseContext();

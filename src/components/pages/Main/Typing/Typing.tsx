@@ -1,10 +1,7 @@
-import TypingArea from "../../../common/TypingArea/TypingArea";
-import Keyboard from "../../../common/Keyboard/Keyboard";
-import TextStatus from "../../../common/TextStatus/TextStatus";
-import {
-  WpmStateContext,
-  WpmDispatchContext,
-} from "../../../../context/WpmContext";
+import TypingArea from "@/components/common/TypingArea/TypingArea";
+import Keyboard from "@/components/common/Keyboard/Keyboard";
+import TextStatus from "@/components/common/TextStatus/TextStatus";
+import { WpmStateContext, WpmDispatchContext } from "@/context/WpmContext";
 
 import { useState } from "react";
 

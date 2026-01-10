@@ -1,4 +1,4 @@
-import { type KeyboardKey } from "../Keyboard";
+import { type KeyboardKey } from "@/components/common/Keyboard/Keyboard";
 import { memo } from "react";
 
 interface KeyProps {
