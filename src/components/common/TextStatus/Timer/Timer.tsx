@@ -15,7 +15,7 @@ const Timer = () => {
     setDuration(0);
     setPauseLock(false);
     if (ctx.ref) {
-      ctx.ref.current.update();
+      ctx.ref.current.updateWpm();
     }
     dispatchMainView("stats");
   };

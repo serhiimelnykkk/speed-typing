@@ -18,7 +18,7 @@ const Main = () => {
 
   const [mainView, setMainView] = useState<MainViewType>("typing");
 
-  const updateHandler = useRef<UpdateHandlerRef>({ update: () => {} });
+  const updateHandler = useRef<UpdateHandlerRef>({ updateWpm: () => {} });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

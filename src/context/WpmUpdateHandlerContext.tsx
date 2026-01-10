@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 export interface UpdateHandlerRef {
-  update: () => void;
+  updateWpm: () => void;
 }
 
 interface ContextValue {
