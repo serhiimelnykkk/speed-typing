@@ -2,16 +2,21 @@ import { useState } from "react";
 import { usePauseLockContext } from "../../../../context/PauseLockContext";
 import useTimer from "./hooks/useTimer";
 import { useMainViewDispatchContext } from "../../../../context/MainViewContext";
+import { useWpmUpdateHandlerContext } from "../../../../context/WpmUpdateHandlerContext";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
 
   const setPauseLock = usePauseLockContext();
   const dispatchMainView = useMainViewDispatchContext();
+  const ctx = useWpmUpdateHandlerContext();
 
   const onStop = () => {
     setDuration(0);
     setPauseLock(false);
+    if (ctx.ref) {
+      ctx.ref.current.update();
+    }
     dispatchMainView("stats");
   };
 

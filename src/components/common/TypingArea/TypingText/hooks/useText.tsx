@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "../../../../../context/PauseContext";
 import { useWpmDispatch } from "../../../../../context/WpmContext";
 import keycode from "keycode";
+import { useWpmUpdateHandlerContext } from "../../../../../context/WpmUpdateHandlerContext";
 
 const useTime = () => {
   const totalTime = useRef(0);
@@ -95,6 +96,14 @@ const useText = (nextSequence: () => string) => {
 
   const { resetTimer, getTimeElapsed } = useTime();
   const { recordChar, recordError, update } = useChars();
+
+  const ctx = useWpmUpdateHandlerContext();
+
+  useImperativeHandle(ctx.ref, () => ({
+    update: () => {
+      return update(getTimeElapsed());
+    },
+  }));
 
   const onCorrectKeyPress = () => {
     lastError.current = false;
