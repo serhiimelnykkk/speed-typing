@@ -1,17 +1,24 @@
 import { PauseContext } from "../../../context/PauseContext";
 import { PauseLockContext } from "../../../context/PauseLockContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import Typing from "./Typing/Typing";
 import type { MainViewType } from "../../../types";
 import { MainViewDispatchContext } from "../../../context/MainViewContext";
 import Stats from "./Stats/Stats";
 
+import {
+  WpmUpdateHandlerContext,
+  type UpdateHandlerRef,
+} from "../../../context/WpmUpdateHandlerContext";
+
 const Main = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isPauseLocked, setIsPauseLocked] = useState(false);
 
   const [mainView, setMainView] = useState<MainViewType>("typing");
+
+  const updateHandler = useRef<UpdateHandlerRef>({ updateWpm: () => {} });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -26,19 +33,21 @@ const Main = () => {
   }, [isPauseLocked]);
 
   return (
-    <PauseContext value={isPaused}>
-      <PauseLockContext value={setIsPauseLocked}>
-        <MainViewDispatchContext value={setMainView}>
-          <main className="px-10 h-full max-w-350 mx-auto">
-            {mainView === "typing" ? (
-              <Typing />
-            ) : (
-              mainView === "stats" && <Stats />
-            )}
-          </main>
-        </MainViewDispatchContext>
-      </PauseLockContext>
-    </PauseContext>
+    <WpmUpdateHandlerContext value={{ ref: updateHandler }}>
+      <PauseContext value={isPaused}>
+        <PauseLockContext value={setIsPauseLocked}>
+          <MainViewDispatchContext value={setMainView}>
+            <main className="px-10 h-full max-w-350 mx-auto">
+              {mainView === "typing" ? (
+                <Typing />
+              ) : (
+                mainView === "stats" && <Stats />
+              )}
+            </main>
+          </MainViewDispatchContext>
+        </PauseLockContext>
+      </PauseContext>
+    </WpmUpdateHandlerContext>
   );
 };
 

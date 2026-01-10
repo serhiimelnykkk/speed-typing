@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "../../../../../context/PauseContext";
 import { useWpmDispatch } from "../../../../../context/WpmContext";
 import keycode from "keycode";
+import { useWpmUpdateHandlerContext } from "../../../../../context/WpmUpdateHandlerContext";
 
 const useTime = () => {
   const totalTime = useRef(0);
@@ -51,7 +52,7 @@ const useChars = () => {
 
   const dispatch = useWpmDispatch();
 
-  const update = (timeElapsed: number) => {
+  const updateWpm = (timeElapsed: number) => {
     const wpm = calculateWpm(
       totalChars.current,
       totalErrors.current,
@@ -64,7 +65,7 @@ const useChars = () => {
     totalErrors.current = 0;
   };
 
-  return { recordChar, recordError, update };
+  return { recordChar, recordError, updateWpm };
 };
 
 const transformKey = (event: KeyboardEvent) => {
@@ -81,8 +82,6 @@ const transformKey = (event: KeyboardEvent) => {
 };
 
 const useText = (nextSequence: () => string) => {
-  const nextSequenceRef = useRef(nextSequence);
-
   const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [enteredText, setEnteredText] = useState("");
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
@@ -94,14 +93,22 @@ const useText = (nextSequence: () => string) => {
   const lastError = useRef(false);
 
   const { resetTimer, getTimeElapsed } = useTime();
-  const { recordChar, recordError, update } = useChars();
+  const { recordChar, recordError, updateWpm } = useChars();
+
+  const wpmUpdateHandlerContext = useWpmUpdateHandlerContext();
+
+  useImperativeHandle(wpmUpdateHandlerContext.ref, () => ({
+    updateWpm: () => {
+      return updateWpm(getTimeElapsed());
+    },
+  }));
 
   const onCorrectKeyPress = () => {
     lastError.current = false;
     if (remainingText.length === 1) {
-      const sequence = nextSequenceRef.current();
+      const sequence = nextSequence();
       setEnteredText("");
-      update(getTimeElapsed());
+      updateWpm(getTimeElapsed());
       setCurrentSequence(sequence);
     } else {
       setEnteredText((prev) =>
