@@ -1,5 +1,5 @@
-import useText from "./hooks/useText";
-import { generateText } from "../../../../utils";
+import useText from "@/components/common/TypingArea/TypingText/hooks/useText";
+import { generateText } from "@/utils";
 
 const DOT_WITH_ZERO_SPACE = "\u00B7\u200B";
 

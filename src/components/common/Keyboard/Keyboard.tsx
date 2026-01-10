@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Key from "./Key/Key";
-import { usePauseContext } from "../../../context/PauseContext";
 import keycode from "keycode";
+import Key from "@/components/common/Keyboard/Key/Key";
+import { usePauseContext } from "@/context/PauseContext";
 
 export interface KeyboardKey {
   mainSymbol: string;

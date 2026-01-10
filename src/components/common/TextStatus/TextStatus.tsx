@@ -1,6 +1,6 @@
-import { usePauseContext } from "../../../context/PauseContext";
-import { useWpm } from "../../../context/WpmContext";
-import Timer from "./Timer/Timer";
+import { usePauseContext } from "@/context/PauseContext";
+import { useWpm } from "@/context/WpmContext";
+import Timer from "@/components/common/TextStatus/Timer/Timer";
 
 const TextStatus = () => {
   const isPaused = usePauseContext();
