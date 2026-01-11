@@ -1,5 +1,6 @@
 import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { MainViews } from "@/components/pages/Main/MainViews";
+import { Suspense } from "react";
 
 const Main = () => {
   const { mainView } = useMainViewContext();
@@ -8,7 +9,9 @@ const Main = () => {
 
   return (
     <main className="px-10 h-full max-w-350 mx-auto">
-      <ActiveView />
+      <Suspense fallback="Loading...">
+        <ActiveView />
+      </Suspense>
     </main>
   );
 };
