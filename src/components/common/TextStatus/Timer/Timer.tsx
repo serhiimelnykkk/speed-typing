@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
 import { useMainViewContext } from "@/context/MainViewContext/Context";
-import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext";
+import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
 import { usePauseContext } from "@/context/PauseContext/Context";
 
 const Timer = () => {

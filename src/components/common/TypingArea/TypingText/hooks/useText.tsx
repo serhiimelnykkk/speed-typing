@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpmDispatch } from "@/context/WpmContext";
 import keycode from "keycode";
-import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext";
+import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
 
 const useTime = () => {
   const totalTime = useRef(0);
