@@ -8,7 +8,7 @@ const Timer = () => {
   const [duration, setDuration] = useState(0);
 
   const { setIsPauseLocked } = usePauseContext();
-  const dispatchMainView = useMainViewContext();
+  const { setMainView } = useMainViewContext();
   const ctx = useWpmUpdateHandlerContext();
 
   const onStop = () => {
@@ -17,7 +17,7 @@ const Timer = () => {
     if (ctx.ref) {
       ctx.ref.current.updateWpm();
     }
-    dispatchMainView("stats");
+    setMainView("stats");
   };
 
   const onStart = () => {
