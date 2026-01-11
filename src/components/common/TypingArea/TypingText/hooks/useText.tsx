@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useImperativeHandle } from "react";
-import { usePauseContext } from "@/context/PauseContext";
+import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpmDispatch } from "@/context/WpmContext";
 import keycode from "keycode";
 import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext";
@@ -14,7 +14,7 @@ const useTime = () => {
   const getTimeElapsed = () =>
     (performance.now() - totalTime.current) / 60 / 1000;
 
-  const isPaused = usePauseContext();
+  const { isPaused } = usePauseContext();
 
   useEffect(() => {
     if (isPaused) {
@@ -88,7 +88,7 @@ const useText = (nextSequence: () => string) => {
 
   const remainingText = currentSequence.slice(enteredText.length);
 
-  const isPaused = usePauseContext();
+  const { isPaused } = usePauseContext();
 
   const lastError = useRef(false);
 

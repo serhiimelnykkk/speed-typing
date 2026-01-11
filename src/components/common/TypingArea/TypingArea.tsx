@@ -1,8 +1,8 @@
-import { usePauseContext } from "@/context/PauseContext";
+import { usePauseContext } from "@/context/PauseContext/Context";
 import TypingText from "@/components/common/TypingArea/TypingText/TypingText";
 
 const TypingArea = () => {
-  const isPaused = usePauseContext();
+  const { isPaused } = usePauseContext();
 
   return (
     <section className="relative text-4xl/14 font-mono">
