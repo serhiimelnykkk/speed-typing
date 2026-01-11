@@ -1,10 +1,6 @@
 import { PauseContext } from "@/context/PauseContext";
 import { PauseLockContext } from "@/context/PauseLockContext";
 import { useEffect, useState, useRef } from "react";
-
-import type { MainViewType } from "@/types";
-import { MainViewDispatchContext } from "@/context/MainViewContext";
-
 import Stats from "@/components/pages/Main/Stats/Stats";
 import Typing from "@/components/pages/Main/Typing/Typing";
 
@@ -13,11 +9,11 @@ import {
   type UpdateHandlerRef,
 } from "@/context/WpmUpdateHandlerContext";
 
+import { useMainViewContext } from "@/context/MainViewContext/Context";
+
 const Main = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isPauseLocked, setIsPauseLocked] = useState(false);
-
-  const [mainView, setMainView] = useState<MainViewType>("typing");
 
   const updateHandler = useRef<UpdateHandlerRef>({ updateWpm: () => {} });
 
@@ -33,19 +29,19 @@ const Main = () => {
     return () => removeEventListener("keydown", onKeyDown);
   }, [isPauseLocked]);
 
+  const { mainView } = useMainViewContext();
+
   return (
     <WpmUpdateHandlerContext value={{ ref: updateHandler }}>
       <PauseContext value={isPaused}>
         <PauseLockContext value={setIsPauseLocked}>
-          <MainViewDispatchContext value={setMainView}>
-            <main className="px-10 h-full max-w-350 mx-auto">
-              {mainView === "typing" ? (
-                <Typing />
-              ) : (
-                mainView === "stats" && <Stats />
-              )}
-            </main>
-          </MainViewDispatchContext>
+          <main className="px-10 h-full max-w-350 mx-auto">
+            {mainView === "typing" ? (
+              <Typing />
+            ) : (
+              mainView === "stats" && <Stats />
+            )}
+          </main>
         </PauseLockContext>
       </PauseContext>
     </WpmUpdateHandlerContext>

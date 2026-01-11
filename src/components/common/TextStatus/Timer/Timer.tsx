@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { usePauseLockContext } from "@/context/PauseLockContext";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
-import { useMainViewDispatchContext } from "@/context/MainViewContext";
+import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
 
   const setPauseLock = usePauseLockContext();
-  const dispatchMainView = useMainViewDispatchContext();
+  const dispatchMainView = useMainViewContext();
   const ctx = useWpmUpdateHandlerContext();
 
   const onStop = () => {
