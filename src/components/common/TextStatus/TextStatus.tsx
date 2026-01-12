@@ -1,9 +1,9 @@
-import { usePauseContext } from "@/context/PauseContext";
+import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpm } from "@/context/WpmContext";
 import Timer from "@/components/common/TextStatus/Timer/Timer";
 
 const TextStatus = () => {
-  const isPaused = usePauseContext();
+  const { isPaused } = usePauseContext();
   const wordsPerMinute = useWpm();
 
   return (
