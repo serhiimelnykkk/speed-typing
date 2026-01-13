@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpmDispatch } from "@/context/WpmContext";
+import { useWpmContext } from "@/context/WpmContext/Context";
 import keycode from "keycode";
 import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
 
@@ -50,7 +50,7 @@ const useChars = () => {
   const recordChar = () => totalChars.current++;
   const recordError = () => totalErrors.current++;
 
-  const dispatch = useWpmDispatch();
+  const { setWpm } = useWpmContext();
 
   const updateWpm = (timeElapsed: number) => {
     const wpm = calculateWpm(
@@ -59,7 +59,7 @@ const useChars = () => {
       timeElapsed
     );
 
-    dispatch((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
 
     totalChars.current = 0;
     totalErrors.current = 0;
