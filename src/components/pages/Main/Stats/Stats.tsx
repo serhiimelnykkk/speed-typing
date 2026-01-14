@@ -1,7 +1,7 @@
-import { useWpm } from "@/context/WpmContext";
+import { useWpmContext } from "@/context/WpmContext/Context";
 
 const Stats = () => {
-  const wpm = useWpm();
+  const { wpm } = useWpmContext();
 
   return <div>Stats: {wpm}</div>;
 };

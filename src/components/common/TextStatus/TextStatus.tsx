@@ -1,10 +1,10 @@
 import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpm } from "@/context/WpmContext";
+import { useWpmContext } from "@/context/WpmContext/Context";
 import Timer from "@/components/common/TextStatus/Timer/Timer";
 
 const TextStatus = () => {
   const { isPaused } = usePauseContext();
-  const wordsPerMinute = useWpm();
+  const { wpm } = useWpmContext();
 
   return (
     <nav className="border-b border-gray-400 border-solid py-2 font-mono flex justify-between">
@@ -23,7 +23,7 @@ const TextStatus = () => {
       </div>
       <div className="flex gap-4">
         <Timer />
-        <div>Words Per Minute: {wordsPerMinute}</div>
+        <div>Words Per Minute: {wpm}</div>
       </div>
     </nav>
   );

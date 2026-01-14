@@ -1,22 +1,13 @@
 import TypingArea from "@/components/common/TypingArea/TypingArea";
 import Keyboard from "@/components/common/Keyboard/Keyboard";
 import TextStatus from "@/components/common/TextStatus/TextStatus";
-import { WpmStateContext, WpmDispatchContext } from "@/context/WpmContext";
-
-import { useState } from "react";
 
 const Typing = () => {
-  const [wordsPerMinute, setWordsPerMinute] = useState(0);
-
   return (
     <>
       <div className="flex flex-col h-[50%] justify-end">
-        <WpmStateContext value={wordsPerMinute}>
-          <TextStatus />
-        </WpmStateContext>
-        <WpmDispatchContext value={setWordsPerMinute}>
-          <TypingArea />
-        </WpmDispatchContext>
+        <TextStatus />
+        <TypingArea />
       </div>
       <Keyboard />
     </>
