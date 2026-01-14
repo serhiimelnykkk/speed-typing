@@ -10,13 +10,13 @@ const Timer = () => {
 
   const { setIsPauseLocked } = usePauseContext();
   const { setMainView } = useMainViewContext();
-  const updateHandler = useWpmHandlersContext();
+  const wpmHandlers = useWpmHandlersContext();
 
   const onStop = () => {
     setDuration(0);
     setIsPauseLocked(false);
-    if (updateHandler.handlerRefs) {
-      updateHandler.handlerRefs.current.update();
+    if (wpmHandlers.handlerRefs) {
+      wpmHandlers.handlerRefs.current.update();
     }
 
     setIsTimerStarted(false);
@@ -25,6 +25,9 @@ const Timer = () => {
   };
 
   const onStart = () => {
+    if (wpmHandlers.handlerRefs) {
+      wpmHandlers.handlerRefs.current.reset();
+    }
     setIsPauseLocked(true);
     setIsTimerStarted(true);
   };
