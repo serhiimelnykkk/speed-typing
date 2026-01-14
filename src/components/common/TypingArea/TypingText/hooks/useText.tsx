@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpmContext } from "@/context/WpmContext/Context";
 import keycode from "keycode";
-import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
+import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 
 const useTime = () => {
   const totalTime = useRef(0);
@@ -94,12 +94,16 @@ const useText = (nextSequence: () => string) => {
 
   const { resetTimer, getTimeElapsed } = useTime();
   const { recordChar, recordError, updateWpm } = useChars();
+  const { setWpm } = useWpmContext();
 
-  const wpmUpdateHandlerContext = useWpmUpdateHandlerContext();
+  const wpmHandlersContext = useWpmHandlersContext();
 
-  useImperativeHandle(wpmUpdateHandlerContext.ref, () => ({
-    updateWpm: () => {
+  useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
+    update: () => {
       return updateWpm(getTimeElapsed());
+    },
+    reset: () => {
+      return setWpm(0);
     },
   }));
 
