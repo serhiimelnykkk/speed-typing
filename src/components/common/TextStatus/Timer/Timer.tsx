@@ -6,22 +6,27 @@ import { usePauseContext } from "@/context/PauseContext/Context";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
+  const [isTimerStarted, setIsTimerStarted] = useState(false);
 
   const { setIsPauseLocked } = usePauseContext();
   const { setMainView } = useMainViewContext();
-  const ctx = useWpmUpdateHandlerContext();
+  const updateHandler = useWpmUpdateHandlerContext();
 
   const onStop = () => {
     setDuration(0);
     setIsPauseLocked(false);
-    if (ctx.ref) {
-      ctx.ref.current.updateWpm();
+    if (updateHandler.ref) {
+      updateHandler.ref.current.updateWpm();
     }
+
+    setIsTimerStarted(false);
+
     setMainView("stats");
   };
 
   const onStart = () => {
     setIsPauseLocked(true);
+    setIsTimerStarted(true);
   };
 
   const { startTimer, stopTimer, timeRemaining } = useTimer({
@@ -42,7 +47,11 @@ const Timer = () => {
       <button onClick={startTimer} className="cursor-pointer">
         Start
       </button>
-      <button onClick={stopTimer} className="cursor-pointer">
+      <button
+        onClick={stopTimer}
+        className="cursor-pointer"
+        disabled={!isTimerStarted}
+      >
         Stop
       </button>
       <label htmlFor="time">
