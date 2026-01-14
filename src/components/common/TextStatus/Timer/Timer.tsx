@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
 import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
@@ -6,31 +6,27 @@ import { usePauseContext } from "@/context/PauseContext/Context";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
-  const isTimerStartedRef = useRef(false);
+  const [isTimerStarted, setIsTimerStarted] = useState(false);
 
   const { setIsPauseLocked } = usePauseContext();
   const { setMainView } = useMainViewContext();
-  const ctx = useWpmUpdateHandlerContext();
+  const updateHandler = useWpmUpdateHandlerContext();
 
   const onStop = () => {
-    if (!isTimerStartedRef.current) {
-      return;
-    }
-
     setDuration(0);
     setIsPauseLocked(false);
-    if (ctx.ref) {
-      ctx.ref.current.updateWpm();
+    if (updateHandler.ref) {
+      updateHandler.ref.current.updateWpm();
     }
 
-    isTimerStartedRef.current = false;
+    setIsTimerStarted(false);
 
     setMainView("stats");
   };
 
   const onStart = () => {
     setIsPauseLocked(true);
-    isTimerStartedRef.current = true;
+    setIsTimerStarted(true);
   };
 
   const { startTimer, stopTimer, timeRemaining } = useTimer({
@@ -51,7 +47,11 @@ const Timer = () => {
       <button onClick={startTimer} className="cursor-pointer">
         Start
       </button>
-      <button onClick={stopTimer} className="cursor-pointer">
+      <button
+        onClick={stopTimer}
+        className="cursor-pointer"
+        disabled={!isTimerStarted}
+      >
         Stop
       </button>
       <label htmlFor="time">
