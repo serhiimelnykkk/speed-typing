@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
 import { useMainViewContext } from "@/context/MainViewContext/Context";
-import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
+import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 import { usePauseContext } from "@/context/PauseContext/Context";
 
 const Timer = () => {
@@ -10,13 +10,13 @@ const Timer = () => {
 
   const { setIsPauseLocked } = usePauseContext();
   const { setMainView } = useMainViewContext();
-  const updateHandler = useWpmUpdateHandlerContext();
+  const wpmHandlers = useWpmHandlersContext();
 
   const onStop = () => {
     setDuration(0);
     setIsPauseLocked(false);
-    if (updateHandler.ref) {
-      updateHandler.ref.current.updateWpm();
+    if (wpmHandlers.handlerRefs) {
+      wpmHandlers.handlerRefs.current.update();
     }
 
     setIsTimerStarted(false);
@@ -25,6 +25,9 @@ const Timer = () => {
   };
 
   const onStart = () => {
+    if (wpmHandlers.handlerRefs) {
+      wpmHandlers.handlerRefs.current.reset();
+    }
     setIsPauseLocked(true);
     setIsTimerStarted(true);
   };

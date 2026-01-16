@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpmContext } from "@/context/WpmContext/Context";
-import keycode from "keycode";
-import { useWpmUpdateHandlerContext } from "@/context/WpmUpdateHandlerContext/Context";
+import { transformKey } from "@/utils";
+import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
+import { calculateWpm } from "@/utils";
 
-const useTime = () => {
+const useTimeElapsed = () => {
   const totalTime = useRef(0);
   const pauseStartedAt = useRef(0);
 
@@ -30,19 +31,6 @@ const useTime = () => {
   return { resetTimer, getTimeElapsed };
 };
 
-const calculateWpm = (chars: number, errors: number, timeElapsed: number) => {
-  const WORD = 5;
-
-  const correctChars = chars - errors;
-  const accuracy = correctChars / chars;
-  const grossWpm = chars / WORD / timeElapsed;
-  const netWpm = grossWpm * accuracy;
-
-  const roundedWpm = Math.round(netWpm);
-
-  return roundedWpm;
-};
-
 const useChars = () => {
   const totalChars = useRef(0);
   const totalErrors = useRef(0);
@@ -50,66 +38,72 @@ const useChars = () => {
   const recordChar = () => totalChars.current++;
   const recordError = () => totalErrors.current++;
 
-  const { setWpm } = useWpmContext();
-
-  const updateWpm = (timeElapsed: number) => {
-    const wpm = calculateWpm(
-      totalChars.current,
-      totalErrors.current,
-      timeElapsed
-    );
-
-    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+  const resetChars = (
+    callback?: (chars: number, errors: number, ...rest: unknown[]) => void
+  ) => {
+    if (callback) {
+      callback(totalChars.current, totalErrors.current);
+    }
 
     totalChars.current = 0;
     totalErrors.current = 0;
   };
 
-  return { recordChar, recordError, updateWpm };
+  return { recordChar, recordError, resetChars };
 };
 
-const transformKey = (event: KeyboardEvent) => {
-  let key = keycode(event);
-  if (key === "space") {
-    key = " ";
-  }
+const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
+  const handlerRef = useRef(handler);
+  const { isPaused } = usePauseContext();
 
-  if (event.key !== key.toLowerCase()) {
-    key = key.toUpperCase();
-  }
+  useEffect(() => {
+    handlerRef.current = handler;
+  });
 
-  return key;
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => handlerRef.current(event);
+
+    if (!isPaused) {
+      addEventListener("keydown", listener);
+    }
+
+    return () => removeEventListener("keydown", listener);
+  }, [isPaused]);
 };
 
 const useText = (nextSequence: () => string) => {
+  const wpmHandlersContext = useWpmHandlersContext();
+
+  const lastError = useRef(false);
+
   const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [enteredText, setEnteredText] = useState("");
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
 
   const remainingText = currentSequence.slice(enteredText.length);
 
-  const { isPaused } = usePauseContext();
+  const { resetTimer, getTimeElapsed } = useTimeElapsed();
+  const { recordChar, recordError, resetChars } = useChars();
+  const { setWpm } = useWpmContext();
 
-  const lastError = useRef(false);
+  const updateSequence = () => {
+    const sequence = nextSequence();
+    setEnteredText("");
+    setCurrentSequence(sequence);
+  };
 
-  const { resetTimer, getTimeElapsed } = useTime();
-  const { recordChar, recordError, updateWpm } = useChars();
+  const onCharsReset = (chars: number, errors: number) => {
+    const timeElapsed = getTimeElapsed();
+    const wpm = calculateWpm(chars, errors, timeElapsed);
 
-  const wpmUpdateHandlerContext = useWpmUpdateHandlerContext();
-
-  useImperativeHandle(wpmUpdateHandlerContext.ref, () => ({
-    updateWpm: () => {
-      return updateWpm(getTimeElapsed());
-    },
-  }));
+    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+  };
 
   const onCorrectKeyPress = () => {
     lastError.current = false;
     if (remainingText.length === 1) {
-      const sequence = nextSequence();
-      setEnteredText("");
-      updateWpm(getTimeElapsed());
-      setCurrentSequence(sequence);
+      resetChars(onCharsReset);
+      updateSequence();
     } else {
       setEnteredText((prev) =>
         prev.length < currentSequence.length
@@ -152,21 +146,17 @@ const useText = (nextSequence: () => string) => {
     }
   };
 
-  const handleKeyDownRef = useRef(handleKeyDown);
+  useKeydownListener(handleKeyDown);
 
-  useEffect(() => {
-    handleKeyDownRef.current = handleKeyDown;
-  });
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => handleKeyDownRef.current(event);
-
-    if (!isPaused) {
-      addEventListener("keydown", listener);
-    }
-
-    return () => removeEventListener("keydown", listener);
-  }, [isPaused]);
+  useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
+    update: () => {
+      return resetChars(onCharsReset);
+    },
+    reset: () => {
+      setWpm(0);
+      updateSequence();
+    },
+  }));
 
   return {
     enteredText,
