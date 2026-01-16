@@ -50,22 +50,18 @@ const useChars = () => {
   const recordChar = () => totalChars.current++;
   const recordError = () => totalErrors.current++;
 
-  const { setWpm } = useWpmContext();
-
-  const updateWpm = (timeElapsed: number) => {
-    const wpm = calculateWpm(
-      totalChars.current,
-      totalErrors.current,
-      timeElapsed
-    );
-
-    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+  const reset = (
+    callback?: (chars: number, errors: number, ...rest: unknown[]) => void
+  ) => {
+    if (callback) {
+      callback(totalChars.current, totalErrors.current);
+    }
 
     totalChars.current = 0;
     totalErrors.current = 0;
   };
 
-  return { recordChar, recordError, updateWpm };
+  return { recordChar, recordError, reset };
 };
 
 const transformKey = (event: KeyboardEvent) => {
@@ -93,27 +89,29 @@ const useText = (nextSequence: () => string) => {
   const lastError = useRef(false);
 
   const { resetTimer, getTimeElapsed } = useTime();
-  const { recordChar, recordError, updateWpm } = useChars();
+  const { recordChar, recordError, reset } = useChars();
   const { setWpm } = useWpmContext();
 
   const wpmHandlersContext = useWpmHandlersContext();
 
-  useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
-    update: () => {
-      return updateWpm(getTimeElapsed());
-    },
-    reset: () => {
-      return setWpm(0);
-    },
-  }));
+  const updateSequence = () => {
+    const sequence = nextSequence();
+    setEnteredText("");
+    setCurrentSequence(sequence);
+  };
+
+  const onCharsReset = (chars: number, errors: number) => {
+    const timeElapsed = getTimeElapsed();
+    const wpm = calculateWpm(chars, errors, timeElapsed);
+
+    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+  };
 
   const onCorrectKeyPress = () => {
     lastError.current = false;
     if (remainingText.length === 1) {
-      const sequence = nextSequence();
-      setEnteredText("");
-      updateWpm(getTimeElapsed());
-      setCurrentSequence(sequence);
+      reset(onCharsReset);
+      updateSequence();
     } else {
       setEnteredText((prev) =>
         prev.length < currentSequence.length
@@ -155,6 +153,16 @@ const useText = (nextSequence: () => string) => {
       }
     }
   };
+
+  useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
+    update: () => {
+      return reset(onCharsReset);
+    },
+    reset: () => {
+      setWpm(0);
+      updateSequence();
+    },
+  }));
 
   const handleKeyDownRef = useRef(handleKeyDown);
 
