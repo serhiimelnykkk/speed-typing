@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useImperativeHandle } from "react";
 import { usePauseContext } from "@/context/PauseContext/Context";
 import { useWpmContext } from "@/context/WpmContext/Context";
-import keycode from "keycode";
+import { transformKey } from "@/utils";
 import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
+import { calculateWpm } from "@/utils";
 
-const useTime = () => {
+const useTimeElapsed = () => {
   const totalTime = useRef(0);
   const pauseStartedAt = useRef(0);
 
@@ -30,19 +31,6 @@ const useTime = () => {
   return { resetTimer, getTimeElapsed };
 };
 
-const calculateWpm = (chars: number, errors: number, timeElapsed: number) => {
-  const WORD = 5;
-
-  const correctChars = chars - errors;
-  const accuracy = correctChars / chars;
-  const grossWpm = chars / WORD / timeElapsed;
-  const netWpm = grossWpm * accuracy;
-
-  const roundedWpm = Math.round(netWpm);
-
-  return roundedWpm;
-};
-
 const useChars = () => {
   const totalChars = useRef(0);
   const totalErrors = useRef(0);
@@ -50,7 +38,7 @@ const useChars = () => {
   const recordChar = () => totalChars.current++;
   const recordError = () => totalErrors.current++;
 
-  const reset = (
+  const resetChars = (
     callback?: (chars: number, errors: number, ...rest: unknown[]) => void
   ) => {
     if (callback) {
@@ -61,38 +49,42 @@ const useChars = () => {
     totalErrors.current = 0;
   };
 
-  return { recordChar, recordError, reset };
+  return { recordChar, recordError, resetChars };
 };
 
-const transformKey = (event: KeyboardEvent) => {
-  let key = keycode(event);
-  if (key === "space") {
-    key = " ";
-  }
+const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
+  const handlerRef = useRef(handler);
+  const { isPaused } = usePauseContext();
 
-  if (event.key !== key.toLowerCase()) {
-    key = key.toUpperCase();
-  }
+  useEffect(() => {
+    handlerRef.current = handler;
+  });
 
-  return key;
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => handlerRef.current(event);
+
+    if (!isPaused) {
+      addEventListener("keydown", listener);
+    }
+
+    return () => removeEventListener("keydown", listener);
+  }, [isPaused]);
 };
 
 const useText = (nextSequence: () => string) => {
+  const wpmHandlersContext = useWpmHandlersContext();
+
+  const lastError = useRef(false);
+
   const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [enteredText, setEnteredText] = useState("");
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
 
   const remainingText = currentSequence.slice(enteredText.length);
 
-  const { isPaused } = usePauseContext();
-
-  const lastError = useRef(false);
-
-  const { resetTimer, getTimeElapsed } = useTime();
-  const { recordChar, recordError, reset } = useChars();
+  const { resetTimer, getTimeElapsed } = useTimeElapsed();
+  const { recordChar, recordError, resetChars } = useChars();
   const { setWpm } = useWpmContext();
-
-  const wpmHandlersContext = useWpmHandlersContext();
 
   const updateSequence = () => {
     const sequence = nextSequence();
@@ -110,7 +102,7 @@ const useText = (nextSequence: () => string) => {
   const onCorrectKeyPress = () => {
     lastError.current = false;
     if (remainingText.length === 1) {
-      reset(onCharsReset);
+      resetChars(onCharsReset);
       updateSequence();
     } else {
       setEnteredText((prev) =>
@@ -154,31 +146,17 @@ const useText = (nextSequence: () => string) => {
     }
   };
 
+  useKeydownListener(handleKeyDown);
+
   useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
     update: () => {
-      return reset(onCharsReset);
+      return resetChars(onCharsReset);
     },
     reset: () => {
       setWpm(0);
       updateSequence();
     },
   }));
-
-  const handleKeyDownRef = useRef(handleKeyDown);
-
-  useEffect(() => {
-    handleKeyDownRef.current = handleKeyDown;
-  });
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => handleKeyDownRef.current(event);
-
-    if (!isPaused) {
-      addEventListener("keydown", listener);
-    }
-
-    return () => removeEventListener("keydown", listener);
-  }, [isPaused]);
 
   return {
     enteredText,

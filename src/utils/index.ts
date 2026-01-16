@@ -1,4 +1,5 @@
 import { generate } from "random-words";
+import keycode from "keycode";
 
 export const generateText = () =>
   (
@@ -24,4 +25,17 @@ export const calculateWpm = (
   const roundedWpm = Math.round(netWpm);
 
   return roundedWpm;
+};
+
+export const transformKey = (event: KeyboardEvent) => {
+  let key = keycode(event);
+  if (key === "space") {
+    key = " ";
+  }
+
+  if (event.key !== key.toLowerCase()) {
+    key = key.toUpperCase();
+  }
+
+  return key;
 };
