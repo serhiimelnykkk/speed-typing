@@ -11,9 +11,9 @@ const TextStatus = () => {
   const ActiveMode = TypingModesViews[mode];
 
   return (
-    <nav className="border-b border-gray-400 border-solid py-2 font-mono flex justify-between">
+    <nav className="border-b border-gray-400 border-solid py-2 flex justify-between">
       <PauseStatus />
-      <div className="flex gap-4">
+      <div className="flex gap-2 items-center">
         <ModeSelector setMode={setMode} />
         <ActiveMode />
       </div>

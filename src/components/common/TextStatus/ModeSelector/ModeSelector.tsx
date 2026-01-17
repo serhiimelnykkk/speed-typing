@@ -1,4 +1,5 @@
 import { TypingModes, type TypingMode } from "@/types";
+import Button from "@/components/common/Button/Button";
 
 interface Props {
   setMode: React.Dispatch<React.SetStateAction<TypingMode>>;
@@ -11,11 +12,10 @@ const ModeSelector = ({ setMode }: Props) => {
 
   return (
     <>
-      {" "}
       {TypingModes.map((mode) => (
-        <button key={mode} onClick={() => handleModeChange(mode)}>
+        <Button key={mode} onClick={() => handleModeChange(mode)}>
           {mode}
-        </button>
+        </Button>
       ))}
     </>
   );
