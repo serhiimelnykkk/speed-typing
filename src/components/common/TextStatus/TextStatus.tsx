@@ -13,7 +13,7 @@ const TextStatus = () => {
   return (
     <nav className="border-b border-gray-400 border-solid py-2 flex justify-between">
       <PauseStatus />
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <ModeSelector setMode={setMode} />
         <ActiveMode />
       </div>

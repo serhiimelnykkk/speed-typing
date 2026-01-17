@@ -47,17 +47,17 @@ const Timer = () => {
   };
 
   return (
-    <div className="flex gap-2">
+    <>
       <span>Timer: {timeRemaining}</span>
       <Button onClick={startTimer}>Start</Button>
       <Button onClick={stopTimer} disabled={!isTimerStarted}>
         Stop
       </Button>
       <label htmlFor="time">
-        <span>Time in Milliseconds</span>
+        <span>Duration</span>
       </label>
       <Input name="time" type="text" value={duration} onChange={handleChange} />
-    </div>
+    </>
   );
 };
 
