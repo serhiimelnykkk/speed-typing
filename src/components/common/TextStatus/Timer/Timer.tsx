@@ -4,6 +4,7 @@ import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 import { usePauseContext } from "@/context/PauseContext/Context";
 import Button from "@/components/common/Button/Button";
+import Input from "@/components/common/Input/Input";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
@@ -55,13 +56,7 @@ const Timer = () => {
       <label htmlFor="time">
         <span>Time in Milliseconds</span>
       </label>
-      <input
-        name="time"
-        type="text"
-        value={duration}
-        onChange={handleChange}
-        className="border border-gray-500"
-      />
+      <Input name="time" type="text" value={duration} onChange={handleChange} />
     </div>
   );
 };

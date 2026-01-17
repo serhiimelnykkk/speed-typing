@@ -16,7 +16,6 @@ const Button = ({ children, ...rest }: Props) => {
       transition-colors duration-200
       hover:border-green-600
 
-
       `}
     >
       {children}
