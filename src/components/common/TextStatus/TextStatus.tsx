@@ -1,10 +1,16 @@
+import { useState } from "react";
+import { type TypingMode } from "@/types";
+
+import { TypingModesViews } from "@/components/common/TextStatus/TypingModes";
+import ModeSelector from "@/components/common/TextStatus/ModeSelector/ModeSelector";
 import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpmContext } from "@/context/WpmContext/Context";
-import Timer from "@/components/common/TextStatus/Timer/Timer";
 
 const TextStatus = () => {
   const { isPaused } = usePauseContext();
-  const { wpm } = useWpmContext();
+
+  const [mode, setMode] = useState<TypingMode>("infinite");
+
+  const ActiveMode = TypingModesViews[mode];
 
   return (
     <nav className="border-b border-gray-400 border-solid py-2 font-mono flex justify-between">
@@ -22,8 +28,8 @@ const TextStatus = () => {
         </span>
       </div>
       <div className="flex gap-4">
-        <Timer />
-        <div>Words Per Minute: {wpm}</div>
+        <ModeSelector setMode={setMode} />
+        <ActiveMode />
       </div>
     </nav>
   );
