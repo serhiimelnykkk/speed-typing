@@ -3,6 +3,7 @@ import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
 import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 import { usePauseContext } from "@/context/PauseContext/Context";
+import Button from "@/components/common/Button/Button";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
@@ -45,12 +46,12 @@ const Timer = () => {
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-2">
       <span>Timer: {timeRemaining}</span>
-      <button onClick={startTimer}>Start</button>
-      <button onClick={stopTimer} disabled={!isTimerStarted}>
+      <Button onClick={startTimer}>Start</Button>
+      <Button onClick={stopTimer} disabled={!isTimerStarted}>
         Stop
-      </button>
+      </Button>
       <label htmlFor="time">
         <span>Time in Milliseconds</span>
       </label>
