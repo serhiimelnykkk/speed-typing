@@ -124,7 +124,7 @@ const Keyboard = () => {
   }, [isPaused]);
 
   return (
-    <section className="grid grid-cols-1 gap-2 mt-12 w-fit mx-auto">
+    <section className="grid grid-cols-1 gap-2">
       {keyboardRows.map((row, index) => (
         <div className={`flex gap-2 ${row.styles}`} key={index}>
           {row.keyboardKeys.map((keyboardKey) => (

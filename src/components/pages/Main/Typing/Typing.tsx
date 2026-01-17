@@ -5,11 +5,15 @@ import TextStatus from "@/components/common/TextStatus/TextStatus";
 const Typing = () => {
   return (
     <>
-      <div className="flex flex-col h-[50%] justify-end">
+      <div className="h-full flex flex-col">
         <TextStatus />
-        <TypingArea />
+        <div className="flex flex-1 items-end">
+          <TypingArea />
+        </div>
+        <div className="flex w-fit mx-auto flex-1 items-center">
+          <Keyboard />
+        </div>
       </div>
-      <Keyboard />
     </>
   );
 };
