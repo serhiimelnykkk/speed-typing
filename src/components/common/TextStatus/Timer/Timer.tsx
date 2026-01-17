@@ -47,14 +47,8 @@ const Timer = () => {
   return (
     <div className="flex gap-4">
       <span>Timer: {timeRemaining}</span>
-      <button onClick={startTimer} className="cursor-pointer">
-        Start
-      </button>
-      <button
-        onClick={stopTimer}
-        className="cursor-pointer"
-        disabled={!isTimerStarted}
-      >
+      <button onClick={startTimer}>Start</button>
+      <button onClick={stopTimer} disabled={!isTimerStarted}>
         Stop
       </button>
       <label htmlFor="time">
