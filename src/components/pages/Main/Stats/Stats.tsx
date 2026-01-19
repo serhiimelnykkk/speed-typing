@@ -1,9 +1,9 @@
 import { useWpmContext } from "@/context/WpmContext/Context";
 
 const Stats = () => {
-  const { wpm } = useWpmContext();
+  const { stats } = useWpmContext();
 
-  return <div>Stats: {wpm}</div>;
+  return <div>Stats: {stats.wpm}</div>;
 };
 
 export default Stats;
