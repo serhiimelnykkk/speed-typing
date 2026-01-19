@@ -11,6 +11,10 @@ export const PauseContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) {
+        return;
+      }
+
       if (event.key === "Escape" && !isPauseLocked) {
         setIsPaused((prev) => !prev);
       }
