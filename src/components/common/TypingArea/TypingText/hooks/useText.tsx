@@ -4,6 +4,7 @@ import { useWpmContext } from "@/context/WpmContext/Context";
 import { transformKey } from "@/utils";
 import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 import { calculateWpm } from "@/utils";
+import { initialStats } from "@/types";
 
 const useTimeElapsed = () => {
   const totalTime = useRef(0);
@@ -162,7 +163,7 @@ const useText = (nextSequence: () => string) => {
       return resetChars(onCharsReset);
     },
     reset: () => {
-      setStats({ wpm: 0, accuracy: 0 });
+      setStats(initialStats);
       updateSequence();
     },
   }));

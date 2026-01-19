@@ -7,3 +7,4 @@ export interface Stats {
   wpm: number;
   accuracy: number;
 }
+export const initialStats: Stats = { wpm: 0, accuracy: 0 };
