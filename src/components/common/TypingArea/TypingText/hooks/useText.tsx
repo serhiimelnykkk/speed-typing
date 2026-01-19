@@ -39,7 +39,7 @@ const useChars = () => {
   const recordError = () => totalErrors.current++;
 
   const resetChars = (
-    callback?: (chars: number, errors: number, ...rest: unknown[]) => void
+    callback?: (chars: number, errors: number, ...rest: unknown[]) => void,
   ) => {
     if (callback) {
       callback(totalChars.current, totalErrors.current);
@@ -94,7 +94,7 @@ const useText = (nextSequence: () => string) => {
 
   const onCharsReset = (chars: number, errors: number) => {
     const timeElapsed = getTimeElapsed();
-    const wpm = calculateWpm(chars, errors, timeElapsed);
+    const { wpm, accuracy } = calculateWpm(chars, errors, timeElapsed);
 
     setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
   };
@@ -108,7 +108,7 @@ const useText = (nextSequence: () => string) => {
       setEnteredText((prev) =>
         prev.length < currentSequence.length
           ? prev + currentSequence[prev.length]
-          : prev
+          : prev,
       );
       setCorrectButtonPressed(true);
     }
