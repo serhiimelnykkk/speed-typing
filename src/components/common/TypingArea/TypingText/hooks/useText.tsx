@@ -4,6 +4,7 @@ import { useWpmContext } from "@/context/WpmContext/Context";
 import { transformKey } from "@/utils";
 import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
 import { calculateWpm } from "@/utils";
+import { initialStats } from "@/types";
 
 const useTimeElapsed = () => {
   const totalTime = useRef(0);
@@ -39,7 +40,7 @@ const useChars = () => {
   const recordError = () => totalErrors.current++;
 
   const resetChars = (
-    callback?: (chars: number, errors: number, ...rest: unknown[]) => void
+    callback?: (chars: number, errors: number, ...rest: unknown[]) => void,
   ) => {
     if (callback) {
       callback(totalChars.current, totalErrors.current);
@@ -84,7 +85,7 @@ const useText = (nextSequence: () => string) => {
 
   const { resetTimer, getTimeElapsed } = useTimeElapsed();
   const { recordChar, recordError, resetChars } = useChars();
-  const { setWpm } = useWpmContext();
+  const { setStats } = useWpmContext();
 
   const updateSequence = () => {
     const sequence = nextSequence();
@@ -94,9 +95,18 @@ const useText = (nextSequence: () => string) => {
 
   const onCharsReset = (chars: number, errors: number) => {
     const timeElapsed = getTimeElapsed();
-    const wpm = calculateWpm(chars, errors, timeElapsed);
+    const stats = calculateWpm(chars, errors, timeElapsed);
 
-    setWpm((prev) => (prev > 0 ? Math.round((prev + wpm) / 2) : wpm));
+    const avg = (prev: number, curr: number) => {
+      return prev > 0 ? Math.round((prev + curr) / 2) : curr;
+    };
+
+    setStats((prev) => {
+      return {
+        wpm: avg(prev.wpm, stats.wpm),
+        accuracy: avg(prev.accuracy, stats.accuracy),
+      };
+    });
   };
 
   const onCorrectKeyPress = () => {
@@ -108,7 +118,7 @@ const useText = (nextSequence: () => string) => {
       setEnteredText((prev) =>
         prev.length < currentSequence.length
           ? prev + currentSequence[prev.length]
-          : prev
+          : prev,
       );
       setCorrectButtonPressed(true);
     }
@@ -153,7 +163,7 @@ const useText = (nextSequence: () => string) => {
       return resetChars(onCharsReset);
     },
     reset: () => {
-      setWpm(0);
+      setStats(initialStats);
       updateSequence();
     },
   }));

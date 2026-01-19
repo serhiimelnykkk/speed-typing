@@ -1,23 +1,24 @@
 import { WpmContext } from "@/context/WpmContext/Context";
 import { useEffect, useMemo, useState } from "react";
+import { type Stats, initialStats } from "@/types";
 
 interface Props {
   children?: React.ReactNode;
 }
 
-const storedWpm = JSON.parse(localStorage.getItem("wpm") || "{}")["wpm"];
-const initialWpm = storedWpm ? storedWpm : 0;
+const storedStats = localStorage.getItem("stats");
+const parsedStats = storedStats ? JSON.parse(storedStats) : initialStats;
 
 export const WpmContextProvider = ({ children }: Props) => {
-  const [wpm, setWpm] = useState(initialWpm);
+  const [stats, setStats] = useState<Stats>(parsedStats);
 
   useEffect(() => {
-    localStorage.setItem("wpm", JSON.stringify({ wpm }));
-  }, [wpm]);
+    localStorage.setItem("stats", JSON.stringify(stats));
+  }, [stats]);
 
   const contextValue = useMemo(() => {
-    return { wpm, setWpm };
-  }, [wpm]);
+    return { stats, setStats };
+  }, [stats]);
 
   return <WpmContext value={contextValue}>{children}</WpmContext>;
 };

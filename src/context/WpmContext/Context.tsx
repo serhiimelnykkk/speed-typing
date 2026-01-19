@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
+import type { Stats } from "@/types";
 
 interface ContextType {
-  wpm: number;
-  setWpm: React.Dispatch<React.SetStateAction<number>>;
+  stats: Stats;
+  setStats: React.Dispatch<React.SetStateAction<Stats>>;
 }
 
 export const WpmContext = createContext<ContextType | null>(null);
@@ -16,5 +17,3 @@ export const useWpmContext = () => {
 
   return ctx;
 };
-
-// export const useWpmDispatch = () => useContext(WpmDispatchContext);

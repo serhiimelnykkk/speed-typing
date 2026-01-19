@@ -1,9 +1,15 @@
 import { useWpmContext } from "@/context/WpmContext/Context";
 
 const Infinite = () => {
-  const { wpm } = useWpmContext();
+  const { stats } = useWpmContext();
 
-  return <div>Words Per Minute: {wpm}</div>;
+  return (
+    <div>
+      <span>
+        WPM: {stats.wpm} | Accuracy: {(stats.accuracy * 100).toFixed(1)}%
+      </span>
+    </div>
+  );
 };
 
 export default Infinite;

@@ -13,7 +13,7 @@ export const generateText = () =>
 export const calculateWpm = (
   chars: number,
   errors: number,
-  timeElapsed: number
+  timeElapsed: number,
 ) => {
   const WORD = 5;
 
@@ -22,9 +22,9 @@ export const calculateWpm = (
   const grossWpm = chars / WORD / timeElapsed;
   const netWpm = grossWpm * accuracy;
 
-  const roundedWpm = Math.round(netWpm);
+  const wpm = Math.round(netWpm);
 
-  return roundedWpm;
+  return { wpm, accuracy };
 };
 
 export const transformKey = (event: KeyboardEvent) => {
