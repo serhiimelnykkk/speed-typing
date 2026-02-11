@@ -8,7 +8,7 @@ import { useState } from "react";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
-  const [isTimerStarted, setIsTimerStarted] = useState(false);
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   const { setIsPauseLocked } = usePause();
   const { setMainView } = useMainView();
@@ -21,7 +21,7 @@ const Timer = () => {
       wpmHandlers.current.update();
     }
 
-    setIsTimerStarted(false);
+    setIsTimerActive(false);
 
     setMainView("stats");
   };
@@ -31,7 +31,7 @@ const Timer = () => {
       wpmHandlers.current.reset();
     }
     setIsPauseLocked(true);
-    setIsTimerStarted(true);
+    setIsTimerActive(true);
   };
 
   const { startTimer, stopTimer, timeRemaining } = useTimer({
@@ -50,7 +50,7 @@ const Timer = () => {
     <>
       <span>Timer: {timeRemaining}</span>
       <Button onClick={startTimer}>Start</Button>
-      <Button onClick={stopTimer} disabled={!isTimerStarted}>
+      <Button onClick={stopTimer} disabled={!isTimerActive}>
         Stop
       </Button>
       <label htmlFor="time">
