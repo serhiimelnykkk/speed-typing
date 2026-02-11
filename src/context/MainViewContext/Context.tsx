@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
 import type { MainViewType } from "@/types";
+import { createContext, useContext } from "react";
 
 interface MainViewContextType {
   mainView: MainViewType;
@@ -8,7 +8,7 @@ interface MainViewContextType {
 
 export const MainViewContext = createContext<MainViewContextType | null>(null);
 
-export const useMainViewContext = () => {
+export const useMainView = () => {
   const ctx = useContext(MainViewContext);
 
   if (!ctx) {

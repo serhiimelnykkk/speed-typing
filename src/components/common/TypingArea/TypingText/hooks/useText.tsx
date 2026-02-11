@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef, useImperativeHandle } from "react";
-import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpmContext } from "@/context/WpmContext/Context";
-import { transformKey } from "@/utils";
-import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
-import { calculateWpm } from "@/utils";
+import { usePause } from "@/context/PauseContext/Context";
+import { useWpmStats } from "@/context/WpmContext/Context";
+import { useWpmHandlers } from "@/context/WpmHandlersContext/Context";
 import { initialStats } from "@/types";
+import { calculateWpm, transformKey } from "@/utils";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 
 const useTimeElapsed = () => {
   const totalTime = useRef(0);
@@ -16,7 +15,7 @@ const useTimeElapsed = () => {
   const getTimeElapsed = () =>
     (performance.now() - totalTime.current) / 60 / 1000;
 
-  const { isPaused } = usePauseContext();
+  const { isPaused } = usePause();
 
   useEffect(() => {
     if (isPaused) {
@@ -55,7 +54,7 @@ const useChars = () => {
 
 const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
   const handlerRef = useRef(handler);
-  const { isPaused } = usePauseContext();
+  const { isPaused } = usePause();
 
   useEffect(() => {
     handlerRef.current = handler;
@@ -73,7 +72,7 @@ const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
 };
 
 const useText = (nextSequence: () => string) => {
-  const wpmHandlersContext = useWpmHandlersContext();
+  const wpmHandlersContext = useWpmHandlers();
 
   const lastError = useRef(false);
 
@@ -85,7 +84,7 @@ const useText = (nextSequence: () => string) => {
 
   const { resetTimer, getTimeElapsed } = useTimeElapsed();
   const { recordChar, recordError, resetChars } = useChars();
-  const { setStats } = useWpmContext();
+  const { setStats } = useWpmStats();
 
   const updateSequence = () => {
     const sequence = nextSequence();

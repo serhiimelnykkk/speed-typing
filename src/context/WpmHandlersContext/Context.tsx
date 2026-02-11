@@ -9,7 +9,7 @@ type ContextValue = React.RefObject<HandlerRefs | null>;
 
 export const WpmHandlersContext = createContext<ContextValue | null>(null);
 
-export const useWpmHandlersContext = () => {
+export const useWpmHandlers = () => {
   const ctx = useContext(WpmHandlersContext);
 
   if (!ctx) {

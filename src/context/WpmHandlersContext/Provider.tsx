@@ -6,10 +6,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const WpmUpdateHandlerContextProvider = ({ children }: Props) => {
-  const updateHandler = useRef<HandlerRefs>(null);
+export const WpmHandlersContextProvider = ({ children }: Props) => {
+  const handlers = useRef<HandlerRefs>(null);
 
-  return (
-    <WpmHandlersContext value={updateHandler}>{children}</WpmHandlersContext>
-  );
+  return <WpmHandlersContext value={handlers}>{children}</WpmHandlersContext>;
 };

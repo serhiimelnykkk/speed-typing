@@ -8,7 +8,7 @@ interface ContextType {
 }
 
 export const PauseContext = createContext<ContextType | null>(null);
-export const usePauseContext = () => {
+export const usePause = () => {
   const ctx = useContext(PauseContext);
 
   if (!ctx) {

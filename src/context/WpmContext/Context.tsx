@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
 import type { Stats } from "@/types";
+import { createContext, useContext } from "react";
 
 interface ContextType {
   stats: Stats;
@@ -8,7 +8,7 @@ interface ContextType {
 
 export const WpmContext = createContext<ContextType | null>(null);
 
-export const useWpmContext = () => {
+export const useWpmStats = () => {
   const ctx = useContext(WpmContext);
 
   if (!ctx) {

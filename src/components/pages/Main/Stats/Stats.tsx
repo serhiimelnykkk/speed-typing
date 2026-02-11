@@ -1,7 +1,7 @@
-import { useWpmContext } from "@/context/WpmContext/Context";
+import { useWpmStats } from "@/context/WpmContext/Context";
 
 const Stats = () => {
-  const { stats } = useWpmContext();
+  const { stats } = useWpmStats();
 
   return (
     <section className="h-full flex items-center justify-center">

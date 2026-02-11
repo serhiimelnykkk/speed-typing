@@ -1,18 +1,18 @@
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
-import { useMainViewContext } from "@/context/MainViewContext/Context";
-import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
+import { useMainView } from "@/context/MainViewContext/Context";
+import { usePause } from "@/context/PauseContext/Context";
+import { useWpmHandlers } from "@/context/WpmHandlersContext/Context";
 import { useState } from "react";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
   const [isTimerStarted, setIsTimerStarted] = useState(false);
 
-  const { setIsPauseLocked } = usePauseContext();
-  const { setMainView } = useMainViewContext();
-  const wpmHandlers = useWpmHandlersContext();
+  const { setIsPauseLocked } = usePause();
+  const { setMainView } = useMainView();
+  const wpmHandlers = useWpmHandlers();
 
   const onStop = () => {
     setDuration(0);

@@ -1,7 +1,7 @@
-import { useWpmContext } from "@/context/WpmContext/Context";
+import { useWpmStats } from "@/context/WpmContext/Context";
 
 const Infinite = () => {
-  const { stats } = useWpmContext();
+  const { stats } = useWpmStats();
 
   return (
     <div>
