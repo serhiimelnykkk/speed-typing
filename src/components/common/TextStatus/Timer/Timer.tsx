@@ -1,10 +1,10 @@
-import { useState } from "react";
-import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
-import { useMainViewContext } from "@/context/MainViewContext/Context";
-import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
-import { usePauseContext } from "@/context/PauseContext/Context";
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
+import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
+import { useMainViewContext } from "@/context/MainViewContext/Context";
+import { usePauseContext } from "@/context/PauseContext/Context";
+import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
+import { useState } from "react";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
@@ -17,8 +17,8 @@ const Timer = () => {
   const onStop = () => {
     setDuration(0);
     setIsPauseLocked(false);
-    if (wpmHandlers.handlerRefs) {
-      wpmHandlers.handlerRefs.current.update();
+    if (wpmHandlers.current) {
+      wpmHandlers.current.update();
     }
 
     setIsTimerStarted(false);
@@ -27,8 +27,8 @@ const Timer = () => {
   };
 
   const onStart = () => {
-    if (wpmHandlers.handlerRefs) {
-      wpmHandlers.handlerRefs.current.reset();
+    if (wpmHandlers.current) {
+      wpmHandlers.current.reset();
     }
     setIsPauseLocked(true);
     setIsTimerStarted(true);

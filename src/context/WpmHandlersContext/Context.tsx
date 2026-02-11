@@ -5,9 +5,7 @@ export interface HandlerRefs {
   reset: () => void;
 }
 
-interface ContextValue {
-  handlerRefs: React.RefObject<HandlerRefs> | null;
-}
+type ContextValue = React.RefObject<HandlerRefs | null>;
 
 export const WpmHandlersContext = createContext<ContextValue | null>(null);
 
