@@ -2,7 +2,7 @@ import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
 import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
 import { useMainView } from "@/context/MainViewContext/Context";
-import { usePause } from "@/context/PauseContext/Context";
+import { usePause } from "@/store/pauseStore";
 import { useWpm } from "@/store/wpmStore";
 import { useState } from "react";
 import { useShallow } from "zustand/shallow";
@@ -11,7 +11,7 @@ const Timer = () => {
   const [duration, setDuration] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
 
-  const { setIsPauseLocked } = usePause();
+  const setPause = usePause((state) => state.actions.setState);
   const { setMainView } = useMainView();
   const { updateWpm, resetWpm } = useWpm(
     useShallow((state) => ({
@@ -24,7 +24,7 @@ const Timer = () => {
     updateWpm();
 
     setDuration(0);
-    setIsPauseLocked(false);
+    setPause({ isPauseLocked: false });
     setIsTimerActive(false);
     setMainView("stats");
   };
@@ -32,7 +32,7 @@ const Timer = () => {
   const onStart = () => {
     resetWpm();
 
-    setIsPauseLocked(true);
+    setPause({ isPauseLocked: true });
     setIsTimerActive(true);
   };
 
