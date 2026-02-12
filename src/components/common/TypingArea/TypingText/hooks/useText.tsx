@@ -1,4 +1,4 @@
-import { usePause } from "@/context/PauseContext/Context";
+import { usePause } from "@/store/pauseStore";
 import { useWpm } from "@/store/wpmStore";
 import { initialStats } from "@/types";
 import { calculateWpm, transformKey } from "@/utils";
@@ -17,7 +17,7 @@ const useTimeElapsed = () => {
     [],
   );
 
-  const { isPaused } = usePause();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   useEffect(() => {
     if (isPaused) {
@@ -59,7 +59,7 @@ const useChars = () => {
 
 const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
   const handlerRef = useRef(handler);
-  const { isPaused } = usePause();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   useEffect(() => {
     handlerRef.current = handler;

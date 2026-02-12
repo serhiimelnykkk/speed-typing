@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { type TypingMode } from "@/types";
-
-import { TypingModesViews } from "@/components/common/TextStatus/TypingModes";
 import ModeSelector from "@/components/common/TextStatus/ModeSelector/ModeSelector";
 import PauseStatus from "@/components/common/TextStatus/PauseStatus/PauseStatus";
+import { TypingModesViews } from "@/components/common/TextStatus/TypingModes";
+import { type TypingMode } from "@/types";
+import { useState } from "react";
 
 const TextStatus = () => {
   const [mode, setMode] = useState<TypingMode>("infinite");
