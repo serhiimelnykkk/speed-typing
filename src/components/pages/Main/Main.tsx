@@ -1,9 +1,9 @@
-import { useMainViewContext } from "@/context/MainViewContext/Context";
 import { MainViews } from "@/components/pages/Main/MainViews";
+import { useMainView } from "@/context/MainViewContext/Context";
 import { Suspense } from "react";
 
 const Main = () => {
-  const { mainView } = useMainViewContext();
+  const { mainView } = useMainView();
 
   const ActiveView = MainViews[mainView];
 

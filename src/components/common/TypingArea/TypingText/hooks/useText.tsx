@@ -1,22 +1,23 @@
-import { useState, useEffect, useRef, useImperativeHandle } from "react";
-import { usePauseContext } from "@/context/PauseContext/Context";
-import { useWpmContext } from "@/context/WpmContext/Context";
-import { transformKey } from "@/utils";
-import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
-import { calculateWpm } from "@/utils";
+import { usePause } from "@/store/pauseStore";
+import { useWpm } from "@/store/wpmStore";
 import { initialStats } from "@/types";
+import { calculateWpm, transformKey } from "@/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 const useTimeElapsed = () => {
   const totalTime = useRef(0);
   const pauseStartedAt = useRef(0);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     totalTime.current = performance.now();
-  };
-  const getTimeElapsed = () =>
-    (performance.now() - totalTime.current) / 60 / 1000;
+  }, []);
+  const getTimeElapsed = useCallback(
+    () => (performance.now() - totalTime.current) / 60 / 1000,
+    [],
+  );
 
-  const { isPaused } = usePauseContext();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   useEffect(() => {
     if (isPaused) {
@@ -36,26 +37,29 @@ const useChars = () => {
   const totalChars = useRef(0);
   const totalErrors = useRef(0);
 
-  const recordChar = () => totalChars.current++;
-  const recordError = () => totalErrors.current++;
+  const recordChar = useCallback(() => totalChars.current++, []);
+  const recordError = useCallback(() => totalErrors.current++, []);
 
-  const resetChars = (
-    callback?: (chars: number, errors: number, ...rest: unknown[]) => void,
-  ) => {
-    if (callback) {
-      callback(totalChars.current, totalErrors.current);
-    }
+  const resetChars = useCallback(
+    (
+      callback?: (chars: number, errors: number, ...rest: unknown[]) => void,
+    ) => {
+      if (callback) {
+        callback(totalChars.current, totalErrors.current);
+      }
 
-    totalChars.current = 0;
-    totalErrors.current = 0;
-  };
+      totalChars.current = 0;
+      totalErrors.current = 0;
+    },
+    [],
+  );
 
   return { recordChar, recordError, resetChars };
 };
 
 const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
   const handlerRef = useRef(handler);
-  const { isPaused } = usePauseContext();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   useEffect(() => {
     handlerRef.current = handler;
@@ -73,10 +77,6 @@ const useKeydownListener = (handler: (event: KeyboardEvent) => void) => {
 };
 
 const useText = (nextSequence: () => string) => {
-  const wpmHandlersContext = useWpmHandlersContext();
-
-  const lastError = useRef(false);
-
   const [currentSequence, setCurrentSequence] = useState(nextSequence());
   const [enteredText, setEnteredText] = useState("");
   const [correctButtonPressed, setCorrectButtonPressed] = useState(true);
@@ -85,29 +85,42 @@ const useText = (nextSequence: () => string) => {
 
   const { resetTimer, getTimeElapsed } = useTimeElapsed();
   const { recordChar, recordError, resetChars } = useChars();
-  const { setStats } = useWpmContext();
 
-  const updateSequence = () => {
+  const { setHandlers, setState } = useWpm(
+    useShallow((state) => ({
+      setHandlers: state.actions.setHandlers,
+      setState: state.actions.setState,
+    })),
+  );
+
+  const lastError = useRef(false);
+
+  const updateSequence = useCallback(() => {
     const sequence = nextSequence();
     setEnteredText("");
     setCurrentSequence(sequence);
-  };
+  }, [nextSequence]);
 
-  const onCharsReset = (chars: number, errors: number) => {
-    const timeElapsed = getTimeElapsed();
-    const stats = calculateWpm(chars, errors, timeElapsed);
+  const onCharsReset = useCallback(
+    (chars: number, errors: number) => {
+      const timeElapsed = getTimeElapsed();
+      const newWpm = calculateWpm(chars, errors, timeElapsed);
 
-    const avg = (prev: number, curr: number) => {
-      return prev > 0 ? Math.round((prev + curr) / 2) : curr;
-    };
-
-    setStats((prev) => {
-      return {
-        wpm: avg(prev.wpm, stats.wpm),
-        accuracy: avg(prev.accuracy, stats.accuracy),
+      const avgWpm = (prev: number, curr: number) => {
+        return prev > 0 ? Math.round((prev + curr) / 2) : curr;
       };
-    });
-  };
+      const avgAccuracy = (prev: number, curr: number) => {
+        curr = curr * 100;
+        return prev > 0 ? Math.round((prev + curr) / 2) : curr;
+      };
+
+      setState((state) => ({
+        wpm: avgWpm(state.wpm, newWpm.wpm),
+        accuracy: avgAccuracy(state.accuracy, newWpm.accuracy),
+      }));
+    },
+    [getTimeElapsed, setState],
+  );
 
   const onCorrectKeyPress = () => {
     lastError.current = false;
@@ -158,15 +171,17 @@ const useText = (nextSequence: () => string) => {
 
   useKeydownListener(handleKeyDown);
 
-  useImperativeHandle(wpmHandlersContext.handlerRefs, () => ({
-    update: () => {
-      return resetChars(onCharsReset);
-    },
-    reset: () => {
-      setStats(initialStats);
-      updateSequence();
-    },
-  }));
+  useEffect(() => {
+    setHandlers({
+      update: () => {
+        return resetChars(onCharsReset);
+      },
+      reset: () => {
+        setState(initialStats);
+        updateSequence();
+      },
+    });
+  }, [onCharsReset, resetChars, setHandlers, updateSequence, setState]);
 
   return {
     enteredText,

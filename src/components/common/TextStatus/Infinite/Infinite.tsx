@@ -1,12 +1,18 @@
-import { useWpmContext } from "@/context/WpmContext/Context";
+import { useWpm } from "@/store/wpmStore";
+import { useShallow } from "zustand/shallow";
 
 const Infinite = () => {
-  const { stats } = useWpmContext();
+  const { wpm, accuracy } = useWpm(
+    useShallow((state) => ({
+      wpm: state.values.wpm,
+      accuracy: state.values.accuracy,
+    })),
+  );
 
   return (
     <div>
       <span>
-        WPM: {stats.wpm} | Accuracy: {(stats.accuracy * 100).toFixed(1)}%
+        WPM: {wpm} | Accuracy: {accuracy.toFixed(1)}%
       </span>
     </div>
   );

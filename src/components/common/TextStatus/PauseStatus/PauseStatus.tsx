@@ -1,7 +1,7 @@
-import { usePauseContext } from "@/context/PauseContext/Context";
+import { usePause } from "@/store/pauseStore";
 
 const PauseOverlay = () => {
-  const { isPaused } = usePauseContext();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   return (
     <div>

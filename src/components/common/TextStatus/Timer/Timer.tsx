@@ -1,37 +1,39 @@
-import { useState } from "react";
-import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
-import { useMainViewContext } from "@/context/MainViewContext/Context";
-import { useWpmHandlersContext } from "@/context/WpmHandlersContext/Context";
-import { usePauseContext } from "@/context/PauseContext/Context";
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
+import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
+import { useMainView } from "@/context/MainViewContext/Context";
+import { usePause } from "@/store/pauseStore";
+import { useWpm } from "@/store/wpmStore";
+import { useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 const Timer = () => {
   const [duration, setDuration] = useState(0);
-  const [isTimerStarted, setIsTimerStarted] = useState(false);
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
-  const { setIsPauseLocked } = usePauseContext();
-  const { setMainView } = useMainViewContext();
-  const wpmHandlers = useWpmHandlersContext();
+  const setPause = usePause((state) => state.actions.setState);
+  const { setMainView } = useMainView();
+  const { updateWpm, resetWpm } = useWpm(
+    useShallow((state) => ({
+      updateWpm: state.handlers.update,
+      resetWpm: state.handlers.reset,
+    })),
+  );
 
   const onStop = () => {
+    updateWpm();
+
     setDuration(0);
-    setIsPauseLocked(false);
-    if (wpmHandlers.handlerRefs) {
-      wpmHandlers.handlerRefs.current.update();
-    }
-
-    setIsTimerStarted(false);
-
+    setPause({ isPauseLocked: false });
+    setIsTimerActive(false);
     setMainView("stats");
   };
 
   const onStart = () => {
-    if (wpmHandlers.handlerRefs) {
-      wpmHandlers.handlerRefs.current.reset();
-    }
-    setIsPauseLocked(true);
-    setIsTimerStarted(true);
+    resetWpm();
+
+    setPause({ isPauseLocked: true });
+    setIsTimerActive(true);
   };
 
   const { startTimer, stopTimer, timeRemaining } = useTimer({
@@ -50,7 +52,7 @@ const Timer = () => {
     <>
       <span>Timer: {timeRemaining}</span>
       <Button onClick={startTimer}>Start</Button>
-      <Button onClick={stopTimer} disabled={!isTimerStarted}>
+      <Button onClick={stopTimer} disabled={!isTimerActive}>
         Stop
       </Button>
       <label htmlFor="time">

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import keycode from "keycode";
 import Key from "@/components/common/Keyboard/Key/Key";
-import { usePauseContext } from "@/context/PauseContext/Context";
+import { usePause } from "@/store/pauseStore";
+
+import keycode from "keycode";
+import { useEffect, useState } from "react";
 
 export interface KeyboardKey {
   mainSymbol: string;
@@ -96,7 +97,7 @@ const keyboardRows: Row[] = [
 
 const Keyboard = () => {
   const [downKeys, setDownKeys] = useState<string[]>([]);
-  const { isPaused } = usePauseContext();
+  const isPaused = usePause((state) => state.values.isPaused);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
