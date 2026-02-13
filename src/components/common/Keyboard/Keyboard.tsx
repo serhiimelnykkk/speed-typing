@@ -4,7 +4,6 @@ import { usePause } from "@/store/pauseStore";
 
 import keycode from "keycode";
 import { useEffect } from "react";
-import { useShallow } from "zustand/shallow";
 
 export interface KeyboardKey {
   mainSymbol: string;
@@ -77,20 +76,31 @@ const keyboardRows: Row[] = [
 ];
 
 const Keyboard = () => {
-  const [downKeys, setDownKeys] = useState<string[]>([]);
-  const isPaused = usePause((state) => state.values.isPaused);
+  const setKeyboard = useKeyboard((state) => state.actions.setState);
 
   useEffect(() => {
+    const isPaused = usePause.getState().values.isPaused;
+
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat) {
+        return;
+      }
+
       const key = keycode(event);
 
-      setDownKeys((prev) => (!event.repeat ? [...prev, key] : prev));
+      setKeyboard((state) => ({
+        ...state,
+        downKeys: [...state.downKeys, key],
+      }));
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
       const key = keycode(event);
 
-      setDownKeys((prev) => prev.filter((keyboardKey) => keyboardKey !== key));
+      setKeyboard((state) => ({
+        ...state,
+        downKeys: state.downKeys.filter((keyboardKey) => keyboardKey !== key),
+      }));
     };
 
     if (!isPaused) {
@@ -102,21 +112,14 @@ const Keyboard = () => {
       removeEventListener("keydown", onKeyDown);
       removeEventListener("keyup", onKeyUp);
     };
-  }, [isPaused]);
+  }, [setKeyboard]);
 
   return (
     <section className="grid grid-cols-1 gap-2">
       {keyboardRows.map((row, index) => (
         <div className={`flex gap-2 ${row.styles}`} key={index}>
           {row.keyboardKeys.map((keyboardKey) => (
-            <Key
-              key={keyboardKey.mainSymbol}
-              keyboardKey={keyboardKey}
-              isPressed={
-                downKeys.includes(keyboardKey.mainSymbol) ||
-                downKeys.includes(keyboardKey.shiftSymbol)
-              }
-            />
+            <Key key={keyboardKey.mainSymbol} keyboardKey={keyboardKey} />
           ))}
         </div>
       ))}

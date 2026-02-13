@@ -4,9 +4,9 @@ import { generate } from "random-words";
 export const generateText = () =>
   (
     generate({
-      max: 5,
-      min: 5,
-      maxLength: 5,
+      max: 25,
+      min: 25,
+      maxLength: 12,
     }) as string[]
   ).reduce((result, current) => (result += " " + current));
 
