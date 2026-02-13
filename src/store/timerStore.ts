@@ -1,8 +1,7 @@
 import { create } from "zustand";
 
 interface State {
-  isPaused: boolean;
-  isPauseLocked: boolean;
+  isActive: boolean;
 }
 
 interface Actions {
@@ -14,9 +13,9 @@ interface Store {
   actions: Actions;
 }
 
-const initialState: State = { isPaused: false, isPauseLocked: false };
+const initialState: State = { isActive: false };
 
-export const usePause = create<Store>((set) => ({
+export const useTimer = create<Store>((set) => ({
   values: { ...initialState },
   actions: {
     setState: (updater) =>
