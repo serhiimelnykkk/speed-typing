@@ -3,7 +3,7 @@ import PauseStatus from "@/components/common/TextStatus/PauseStatus/PauseStatus"
 import { TypingModesViews } from "@/components/common/TextStatus/TypingModes";
 import { useTimer } from "@/store/timerStore";
 import { type TypingMode } from "@/types";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 const TextStatus = () => {
   const [mode, setMode] = useState<TypingMode>("infinite");
@@ -17,7 +17,9 @@ const TextStatus = () => {
       <PauseStatus />
       <div className="flex gap-2 items-center">
         {!isTimerActive && <ModeSelector setMode={setMode} />}
-        <ActiveMode />
+        <Suspense fallback="Loading...">
+          <ActiveMode />
+        </Suspense>
       </div>
     </nav>
   );

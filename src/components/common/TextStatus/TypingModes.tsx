@@ -1,8 +1,8 @@
 import Infinite from "@/components/common/TextStatus/Infinite/Infinite";
-import Timer from "@/components/common/TextStatus/Timer/Timer";
 import { type TypingMode } from "@/types";
+import { lazy } from "react";
 
 export const TypingModesViews: Record<TypingMode, React.ComponentType> = {
   infinite: Infinite,
-  timer: Timer,
+  timer: lazy(() => import("@/components/common/TextStatus/Timer/Timer")),
 };
