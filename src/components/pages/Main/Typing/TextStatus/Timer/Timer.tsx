@@ -1,6 +1,6 @@
 import Button from "@/components/common/Button/Button";
 import Input from "@/components/common/Input/Input";
-import useTimer from "@/components/common/TextStatus/Timer/hooks/useTimer";
+import useTimer from "@/components/pages/Main/Typing/TextStatus/Timer/hooks/useTimer";
 import { useMainView } from "@/context/MainViewContext/Context";
 import { usePause } from "@/store/pauseStore";
 import { useTimer as useTimerStore } from "@/store/timerStore";

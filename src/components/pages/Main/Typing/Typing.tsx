@@ -1,6 +1,6 @@
-import Keyboard from "@/components/common/Keyboard/Keyboard";
-import TextStatus from "@/components/common/TextStatus/TextStatus";
-import TypingArea from "@/components/common/TypingArea/TypingArea";
+import Keyboard from "@/components/pages/Main/Typing/Keyboard/Keyboard";
+import TextStatus from "@/components/pages/Main/Typing/TextStatus/TextStatus";
+import TypingArea from "@/components/pages/Main/Typing/TypingArea/TypingArea";
 import { usePause } from "@/store/pauseStore";
 import { useEffect } from "react";
 

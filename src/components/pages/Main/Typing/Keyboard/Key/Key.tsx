@@ -1,18 +1,12 @@
-import { type KeyboardKey } from "@/components/common/Keyboard/Keyboard";
-import { useKeyboard } from "@/store/keyboardStore";
+import { type KeyboardKey } from "@/components/pages/Main/Typing/Keyboard/Keyboard";
 import { memo } from "react";
 
 interface KeyProps {
+  isPressed: boolean;
   keyboardKey: Required<KeyboardKey>;
 }
 
-export const Key = memo(({ keyboardKey }: KeyProps) => {
-  const isPressed = useKeyboard(
-    (state) =>
-      state.values.downKeys.includes(keyboardKey.mainSymbol) ||
-      state.values.downKeys.includes(keyboardKey.shiftSymbol),
-  );
-
+const Key = memo(({ isPressed, keyboardKey }: KeyProps) => {
   return (
     <div
       className={`relative h-12 bg-gray-300 border border-gray-900 text-xs sm:text-base
@@ -21,9 +15,11 @@ export const Key = memo(({ keyboardKey }: KeyProps) => {
       key={keyboardKey.mainSymbol}
     >
       <div className="absolute top-1 left-1">
-        {keyboardKey.viewName || keyboardKey.mainSymbol}
+        {keyboardKey.visualName || keyboardKey.mainSymbol}
       </div>
       <div className="absolute bottom-1 right-1">{keyboardKey.shiftSymbol}</div>
     </div>
   );
 });
+
+export default Key;
