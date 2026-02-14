@@ -1,4 +1,4 @@
-import TypingText from "@/components/common/TypingArea/TypingText/TypingText";
+import TypingText from "@/components/pages/Main/Typing/TypingArea/TypingText/TypingText";
 import { usePause } from "@/store/pauseStore";
 
 const TypingArea = () => {

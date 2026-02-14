@@ -1,9 +1,9 @@
-import ModeSelector from "@/components/common/TextStatus/ModeSelector/ModeSelector";
-import PauseStatus from "@/components/common/TextStatus/PauseStatus/PauseStatus";
-import { TypingModesViews } from "@/components/common/TextStatus/TypingModes";
+import ModeSelector from "@/components/pages/Main/Typing/TextStatus/ModeSelector/ModeSelector";
+import PauseStatus from "@/components/pages/Main/Typing/TextStatus/PauseStatus/PauseStatus";
+import { TypingModesViews } from "@/components/pages/Main/Typing/TextStatus/TypingModes";
 import { useTimer } from "@/store/timerStore";
 import { type TypingMode } from "@/types";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 
 const TextStatus = () => {
   const [mode, setMode] = useState<TypingMode>("infinite");
@@ -17,9 +17,7 @@ const TextStatus = () => {
       <PauseStatus />
       <div className="flex gap-2 items-center">
         {!isTimerActive && <ModeSelector setMode={setMode} />}
-        <Suspense fallback="Loading...">
-          <ActiveMode />
-        </Suspense>
+        <ActiveMode />
       </div>
     </nav>
   );
