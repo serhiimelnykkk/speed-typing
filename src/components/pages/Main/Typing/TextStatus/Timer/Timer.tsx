@@ -56,17 +56,25 @@ const Timer = () => {
   };
 
   return (
-    <>
-      <span>Timer: {timeRemaining}</span>
-      <Button onClick={startTimer}>Start</Button>
-      <Button onClick={stopTimer} disabled={!isTimerActive}>
-        Stop
-      </Button>
-      <label htmlFor="time">
-        <span>Duration</span>
-      </label>
-      <Input name="time" type="text" value={duration} onChange={handleChange} />
-    </>
+    <div className="flex justify-between">
+      <div className="flex gap-2">
+        <Button onClick={startTimer}>Start</Button>
+        <Button onClick={stopTimer} disabled={!isTimerActive}>
+          Stop
+        </Button>
+        <Input
+          aria-label="duration"
+          name="time"
+          type="text"
+          placeholder="duration"
+          value={duration === 0 ? "" : duration}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <span className="text-xl">{timeRemaining}</span>
+      </div>
+    </div>
   );
 };
 

@@ -27,7 +27,9 @@ const Typing = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <TextStatus />
+      <div className="w-[50%] mx-auto">
+        <TextStatus />
+      </div>
       <div className="flex flex-1 items-end">
         <TypingArea />
       </div>
